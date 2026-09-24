@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Printer, ArrowLeft, Download, CheckCircle2, MessageSquareShare, MapPin, Truck, Store, Calendar, User, FileText } from 'lucide-react';
 import { OrderPayload } from '../utils/orderEncoder';
 import { BoaVistaLogo } from './BoaVistaLogo';
+import { buildWhatsAppUrl, openWhatsAppSafely } from '../utils/whatsapp';
 
 interface OrderPrintViewProps {
   order: OrderPayload;
@@ -25,10 +26,9 @@ export const OrderPrintView: React.FC<OrderPrintViewProps> = ({ order, onBack, a
   };
 
   const handleSendWhatsAppConfirmation = () => {
-    const text = encodeURIComponent(
-      `Olá ${order.customerName}! Recebemos seu pedido *${order.orderId}* na Papelaria Boa Vista e já estamos com a ordem de separação em mãos na bancada! Total: R$ ${order.grandTotal.toFixed(2).replace('.', ',')}. Logo avisaremos quando estiver pronto!`
-    );
-    window.open(`https://wa.me/553488710753?text=${text}`, '_blank');
+    const text = `Olá ${order.customerName}! Recebemos seu pedido *${order.orderId}* na Papelaria Boa Vista e já estamos com a ordem de separação em mãos na bancada! Total: R$ ${order.grandTotal.toFixed(2).replace('.', ',')}. Logo avisaremos quando estiver pronto!`;
+    const url = buildWhatsAppUrl(text);
+    openWhatsAppSafely(url);
   };
 
   return (

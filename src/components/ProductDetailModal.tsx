@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { Product } from '../types';
 import { isProductNew, getProductFullImageUrl } from '../utils/productUtils';
+import { buildWhatsAppUrl, openWhatsAppSafely } from '../utils/whatsapp';
 
 interface ProductDetailModalProps {
   product: Product | null;
@@ -35,10 +36,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const handleWhatsAppInquiry = () => {
     const imageUrl = getProductFullImageUrl(product);
     const photoLine = imageUrl ? `\n📸 *Foto do item:* ${imageUrl}` : '';
-    const text = encodeURIComponent(
-      `Olá, Papelaria Boa Vista! Gostaria de pedir ou saber mais sobre a *${product.name}* (R$ ${product.price.toFixed(2).replace('.', ',')}) que vi no catálogo online.${photoLine}`
-    );
-    window.open(`https://wa.me/553488710753?text=${text}`, '_blank');
+    const text = `Olá, Papelaria Boa Vista! Gostaria de pedir ou saber mais sobre o item *${product.name}* (R$ ${product.price.toFixed(2).replace('.', ',')}) que vi no catálogo online.${photoLine}`;
+    const whatsappUrl = buildWhatsAppUrl(text);
+    openWhatsAppSafely(whatsappUrl);
   };
 
   return (

@@ -1,5 +1,6 @@
 import { CartItem } from '../types';
 import { getProductFullImageUrl } from './productUtils';
+import { PRODUCTS } from '../data/products';
 
 export interface OrderPayloadItem {
   id: string;
@@ -74,7 +75,7 @@ export function buildOrderPayload({
   return {
     orderId,
     createdAt: `${dateStr} às ${timeStr}`,
-    customerName: customerName.trim(),
+    customerName: customerName.trim() || 'Cliente',
     deliveryMethod,
     neighborhoodType,
     customNeighborhood: customNeighborhood.trim(),
@@ -87,15 +88,30 @@ export function buildOrderPayload({
 }
 
 /**
- * Encodes order payload into a URL-safe base64 string.
+ * Encodes order payload into an ultra-compact URL-safe base64 string.
+ * Keeps the WhatsApp message and PDF links very short (< 300 chars)
+ * to avoid URL truncation in WhatsApp and browser address bars.
  */
 export function encodeOrder(order: OrderPayload): string {
   try {
-    const json = JSON.stringify(order);
-    // UTF-8 to safe base64
-    const base64 = btoa(encodeURIComponent(json).replace(/%([0-9A-F]{2})/g, (_, p1) => {
-      return String.fromCharCode(parseInt(p1, 16));
-    }));
+    // Ultra-compact JSON format
+    const compact = {
+      v: 2,
+      id: order.orderId,
+      dt: order.createdAt,
+      n: order.customerName,
+      m: order.deliveryMethod === 'retirada' ? 'r' : 'e',
+      nt: order.neighborhoodType === 'boa_vista' ? 'b' : 'o',
+      cn: order.customNeighborhood || '',
+      ad: order.addressOrNotes || '',
+      it: order.items.map((i) => [i.id, i.quantity, i.price]),
+    };
+    const json = JSON.stringify(compact);
+    const base64 = btoa(
+      encodeURIComponent(json).replace(/%([0-9A-F]{2})/g, (_, p1) => {
+        return String.fromCharCode(parseInt(p1, 16));
+      })
+    );
     return encodeURIComponent(base64);
   } catch (err) {
     console.error('Error encoding order:', err);
@@ -105,6 +121,7 @@ export function encodeOrder(order: OrderPayload): string {
 
 /**
  * Decodes order payload from a URL parameter.
+ * Handles both the ultra-compact v2 format and legacy full format.
  */
 export function decodeOrder(param: string): OrderPayload | null {
   try {
@@ -122,7 +139,48 @@ export function decodeOrder(param: string): OrderPayload | null {
       // Fallback if raw JSON was passed
       jsonStr = unencoded;
     }
-    return JSON.parse(jsonStr) as OrderPayload;
+    const data = JSON.parse(jsonStr);
+
+    // If compact format (v: 2 or contains compact field keys)
+    if (data.v === 2 || data.m) {
+      const items: OrderPayloadItem[] = (data.it || []).map(
+        ([id, quantity, customPrice]: [string, number, number?]) => {
+          const prod = PRODUCTS.find((p) => p.id === id);
+          return {
+            id,
+            name: prod ? prod.name : id,
+            tag: prod?.tag,
+            quantity: Number(quantity) || 1,
+            price: customPrice ?? (prod ? prod.price : 0),
+            image: prod ? getProductFullImageUrl(prod) || prod.image : '',
+          };
+        }
+      );
+
+      const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const deliveryMethod: 'retirada' | 'entrega' = data.m === 'r' ? 'retirada' : 'entrega';
+      const neighborhoodType: 'boa_vista' | 'outros' = data.nt === 'o' ? 'outros' : 'boa_vista';
+      const deliveryFee =
+        deliveryMethod === 'retirada' ? 0.0 : neighborhoodType === 'boa_vista' ? 0.0 : 7.0;
+      const grandTotal = subtotal + deliveryFee;
+
+      return {
+        orderId: data.id || 'PBV-000000',
+        createdAt: data.dt || 'Hoje',
+        customerName: data.n || 'Cliente',
+        deliveryMethod,
+        neighborhoodType,
+        customNeighborhood: data.cn || '',
+        addressOrNotes: data.ad || '',
+        items,
+        subtotal,
+        deliveryFee,
+        grandTotal,
+      };
+    }
+
+    // Fallback: Legacy full format
+    return data as OrderPayload;
   } catch (err) {
     console.error('Failed to decode order payload:', err);
     return null;
@@ -146,3 +204,4 @@ export function getOrderPrintUrl(order: OrderPayload, autoPrint = false): string
   const printParam = autoPrint ? '&imprimir=1' : '';
   return `${baseUrl}/?pedido=${encoded}${printParam}`;
 }
+

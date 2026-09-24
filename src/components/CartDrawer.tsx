@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { X, Plus, Minus, Trash2, MessageSquareShare, ShoppingBag, Truck, Store, MapPin, AlertCircle, Camera, Copy, Check, Printer, FileText } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { X, Plus, Minus, Trash2, MessageSquareShare, ShoppingBag, Truck, Store, MapPin, AlertCircle, Camera, Copy, Check, Printer, FileText, ArrowRight } from 'lucide-react';
 import { CartItem } from '../types';
 import { getProductFullImageUrl } from '../utils/productUtils';
 import { buildOrderPayload, getOrderPrintUrl } from '../utils/orderEncoder';
+import { buildWhatsAppUrl, buildWaMeUrl, openWhatsAppSafely, STORE_WHATSAPP_FORMATTED } from '../utils/whatsapp';
 
 const MINIMUM_DELIVERY_ORDER = 50.0;
 
@@ -23,12 +24,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onRemoveItem,
   onClearCart,
 }) => {
-  const [deliveryMethod, setDeliveryMethod] = useState<'retirada' | 'entrega'>('entrega');
+  const [deliveryMethod, setDeliveryMethod] = useState<'retirada' | 'entrega'>('retirada');
   const [neighborhoodType, setNeighborhoodType] = useState<'boa_vista' | 'outros'>('boa_vista');
   const [customNeighborhood, setCustomNeighborhood] = useState('');
   const [customerName, setCustomerName] = useState('');
   const [addressOrNotes, setAddressOrNotes] = useState('');
   const [hasCopied, setHasCopied] = useState(false);
+  const [whatsAppSent, setWhatsAppSent] = useState(false);
+  const [lastWhatsAppUrl, setLastWhatsAppUrl] = useState('');
   const [validationErrors, setValidationErrors] = useState<{
     customerName?: string;
     customNeighborhood?: string;
@@ -36,11 +39,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     minimumDelivery?: string;
   }>({});
 
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const customNeighborhoodInputRef = useRef<HTMLInputElement>(null);
+  const addressInputRef = useRef<HTMLInputElement>(null);
+  const scrollableBodyRef = useRef<HTMLDivElement>(null);
+
   if (!isOpen) return null;
 
   const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const isDeliveryUnderMinimum = deliveryMethod === 'entrega' && total < MINIMUM_DELIVERY_ORDER;
-  const deliveryShortfall = MINIMUM_DELIVERY_ORDER - total;
+  const deliveryShortfall = Math.max(0, MINIMUM_DELIVERY_ORDER - total);
 
   // Delivery fee logic:
   // Retirada na loja: R$ 0,00
@@ -55,11 +63,21 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const grandTotal = total + deliveryFee;
 
-  const generateOrderMessage = () => {
-    let message = `🌻 *NOVO PEDIDO - PAPELARIA BOA VISTA* 🌻\n\n`;
-    message += `👤 *Cliente:* ${customerName.trim()}\n`;
+  const generateOrderMessage = (nameOverride?: string, methodOverride?: 'retirada' | 'entrega') => {
+    const finalName = (nameOverride ?? customerName).trim() || 'Cliente';
+    const finalMethod = methodOverride ?? deliveryMethod;
+    const finalFee =
+      finalMethod === 'retirada'
+        ? 0.0
+        : neighborhoodType === 'boa_vista'
+        ? 0.0
+        : 7.0;
+    const finalGrandTotal = total + finalFee;
 
-    if (deliveryMethod === 'retirada') {
+    let message = `🌻 *NOVO PEDIDO - PAPELARIA BOA VISTA* 🌻\n\n`;
+    message += `👤 *Cliente:* ${finalName}\n`;
+
+    if (finalMethod === 'retirada') {
       message += `📍 *Modalidade:* Retirada na Loja (Av. Elias Cruvinel, 970 - Bairro Boa Vista, Uberaba-MG)\n`;
       if (addressOrNotes.trim()) {
         message += `📝 *Observações:* ${addressOrNotes.trim()}\n`;
@@ -89,25 +107,25 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
     message += `\n━━━━━━━━━━━━━━━━━━━━━\n`;
     message += `💰 *Subtotal dos Produtos:* R$ ${total.toFixed(2).replace('.', ',')}`;
-    if (deliveryMethod === 'entrega') {
+    if (finalMethod === 'entrega') {
       if (neighborhoodType === 'boa_vista') {
         message += `\n🛵 *Taxa de Entrega (Bairro Boa Vista):* GRÁTIS (R$ 0,00)`;
       } else {
         message += `\n🛵 *Taxa de Entrega (Outros Bairros):* R$ 7,00`;
       }
     }
-    message += `\n🏷️ *TOTAL GERAL DO PEDIDO:* R$ ${grandTotal.toFixed(2).replace('.', ',')}\n\n`;
+    message += `\n🏷️ *TOTAL GERAL DO PEDIDO:* R$ ${finalGrandTotal.toFixed(2).replace('.', ',')}\n\n`;
 
     const orderPayload = buildOrderPayload({
-      customerName,
-      deliveryMethod,
+      customerName: finalName,
+      deliveryMethod: finalMethod,
       neighborhoodType,
       customNeighborhood,
       addressOrNotes,
       items,
       total,
-      deliveryFee,
-      grandTotal,
+      deliveryFee: finalFee,
+      grandTotal: finalGrandTotal,
     });
     const printPdfUrl = getOrderPrintUrl(orderPayload, true);
 
@@ -119,7 +137,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     return message;
   };
 
-  const validateOrder = (): boolean => {
+  const handleSendWhatsAppOrder = (overrideDeliveryMethod?: 'retirada', fallbackCustomerName?: string) => {
+    if (items.length === 0) return;
+
+    const activeMethod = overrideDeliveryMethod || deliveryMethod;
     const errors: {
       customerName?: string;
       customNeighborhood?: string;
@@ -127,46 +148,66 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       minimumDelivery?: string;
     } = {};
 
-    if (deliveryMethod === 'entrega' && total < MINIMUM_DELIVERY_ORDER) {
-      errors.minimumDelivery = `O pedido mínimo para entrega é de R$ ${MINIMUM_DELIVERY_ORDER.toFixed(2).replace('.', ',')}. Faltam R$ ${deliveryShortfall.toFixed(2).replace('.', ',')} em produtos ou você pode optar por Retirar na Loja sem valor mínimo.`;
+    if (activeMethod === 'entrega' && total < MINIMUM_DELIVERY_ORDER) {
+      errors.minimumDelivery = `O pedido mínimo para entrega é de R$ ${MINIMUM_DELIVERY_ORDER.toFixed(2).replace('.', ',')}. Faltam R$ ${deliveryShortfall.toFixed(2).replace('.', ',')} em produtos. Você pode optar por Retirar na Loja sem valor mínimo.`;
     }
 
-    if (!customerName.trim()) {
-      errors.customerName = 'Por favor, informe o seu nome.';
+    const effectiveCustomerName = (fallbackCustomerName ?? customerName).trim();
+    if (!effectiveCustomerName) {
+      errors.customerName = 'Por favor, informe o seu nome para o pedido.';
     }
 
-    if (deliveryMethod === 'entrega') {
+    if (activeMethod === 'entrega') {
       if (neighborhoodType === 'outros' && !customNeighborhood.trim()) {
         errors.customNeighborhood = 'Por favor, informe o nome do seu bairro.';
       }
 
       if (!addressOrNotes.trim()) {
-        errors.address = 'Por favor, informe seu endereço completo (rua, número, etc.).';
+        errors.address = 'Por favor, informe seu endereço completo de entrega (rua, número, etc.).';
       }
     }
 
     if (Object.keys(errors).length > 0) {
       setValidationErrors(errors);
-      return false;
+      if (errors.customerName && nameInputRef.current) {
+        nameInputRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        nameInputRef.current.focus();
+      } else if (errors.customNeighborhood && customNeighborhoodInputRef.current) {
+        customNeighborhoodInputRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        customNeighborhoodInputRef.current.focus();
+      } else if (errors.address && addressInputRef.current) {
+        addressInputRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        addressInputRef.current.focus();
+      }
+      return;
     }
 
     setValidationErrors({});
-    return true;
+
+    const message = generateOrderMessage(effectiveCustomerName, activeMethod);
+    const whatsappUrl = buildWhatsAppUrl(message);
+    setLastWhatsAppUrl(whatsappUrl);
+    setWhatsAppSent(true);
+
+    // Reliably open WhatsApp without popup blocker issues
+    openWhatsAppSafely(whatsappUrl);
   };
 
-  const handleSendWhatsAppOrder = () => {
-    if (items.length === 0) return;
-    if (!validateOrder()) return;
+  const handleQuickSendAsPickup = () => {
+    setDeliveryMethod('retirada');
+    setValidationErrors((prev) => ({ ...prev, minimumDelivery: undefined }));
+    handleSendWhatsAppOrder('retirada');
+  };
 
-    const message = generateOrderMessage();
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/553488710753?text=${encodedMessage}`;
-    window.open(whatsappUrl, '_blank');
+  const handleQuickSendWithDefaultName = () => {
+    const defaultName = 'Cliente do Catálogo Online';
+    setCustomerName(defaultName);
+    setValidationErrors((prev) => ({ ...prev, customerName: undefined }));
+    handleSendWhatsAppOrder(undefined, defaultName);
   };
 
   const handleCopyOrderText = async () => {
     if (items.length === 0) return;
-    if (!validateOrder()) return;
 
     const message = generateOrderMessage();
     try {
@@ -182,10 +223,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const handleOpenPrintPreview = () => {
     if (items.length === 0) return;
-    if (!validateOrder()) return;
 
     const orderPayload = buildOrderPayload({
-      customerName,
+      customerName: customerName.trim() || 'Cliente',
       deliveryMethod,
       neighborhoodType,
       customNeighborhood,
@@ -196,7 +236,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       grandTotal,
     });
     const printPdfUrl = getOrderPrintUrl(orderPayload, true);
-    window.open(printPdfUrl, '_blank');
+    openWhatsAppSafely(printPdfUrl);
   };
 
   return (
@@ -238,7 +278,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         </div>
 
         {/* Scrollable Body - min-h-0 flex-1 */}
-        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-6 space-y-4">
+        <div ref={scrollableBodyRef} className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-6 space-y-4">
             {items.length === 0 ? (
               <div className="text-center py-12">
                 <div className="w-16 h-16 rounded-full bg-stone-100 flex items-center justify-center mx-auto text-stone-400 mb-4">
@@ -473,6 +513,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                             <span className="text-[10px] text-red-500 font-medium">Obrigatório</span>
                           </div>
                           <input
+                            ref={customNeighborhoodInputRef}
                             type="text"
                             value={customNeighborhood}
                             onChange={(e) => {
@@ -509,6 +550,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       <span className="text-[10px] text-red-500 font-medium">Obrigatório</span>
                     </div>
                     <input
+                      ref={nameInputRef}
                       type="text"
                       value={customerName}
                       onChange={(e) => {
@@ -525,9 +567,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       }`}
                     />
                     {validationErrors.customerName && (
-                      <p className="text-[11px] text-red-600 mt-1 font-medium flex items-center gap-1">
-                        ⚠ {validationErrors.customerName}
-                      </p>
+                      <div className="mt-1 flex items-center justify-between text-[11px] text-red-600">
+                        <span className="font-medium flex items-center gap-1">⚠ {validationErrors.customerName}</span>
+                        <button
+                          type="button"
+                          onClick={handleQuickSendWithDefaultName}
+                          className="text-[#DF8035] hover:underline font-bold text-[10px] cursor-pointer"
+                        >
+                          Usar "Cliente do Catálogo"
+                        </button>
+                      </div>
                     )}
                   </div>
 
@@ -547,6 +596,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       )}
                     </div>
                     <input
+                      ref={addressInputRef}
                       type="text"
                       value={addressOrNotes}
                       onChange={(e) => {
@@ -599,38 +649,76 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
               </div>
 
-              {/* Minimum delivery error message */}
+              {/* Minimum delivery error message banner */}
               {validationErrors.minimumDelivery && (
-                <div className="p-2.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 space-y-1.5 animate-in fade-in">
-                  <div className="flex items-start gap-1.5 font-bold">
-                    <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                <div className="p-3 rounded-2xl bg-amber-50 border border-amber-300 text-xs text-amber-950 space-y-2 animate-in fade-in">
+                  <div className="flex items-start gap-1.5 font-bold text-amber-900">
+                    <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                     <span>{validationErrors.minimumDelivery}</span>
                   </div>
                   <button
                     type="button"
-                    onClick={() => {
-                      setDeliveryMethod('retirada');
-                      setValidationErrors((prev) => ({ ...prev, minimumDelivery: undefined }));
-                    }}
-                    className="text-[11px] font-bold text-[#DF8035] hover:underline block ml-5 cursor-pointer"
+                    onClick={handleQuickSendAsPickup}
+                    className="w-full py-2 px-3 rounded-xl bg-[#241E19] hover:bg-[#DF8035] text-white font-bold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs active:scale-[0.99]"
                   >
-                    → Mudar para Retirada na Loja (Grátis e sem valor mínimo)
+                    <Store className="w-4 h-4 text-emerald-400" />
+                    <span>Mudar para Retirada na Loja (Grátis) e Enviar Agora</span>
                   </button>
                 </div>
               )}
 
+              {/* Customer name missing warning banner */}
+              {validationErrors.customerName && (
+                <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 flex items-center justify-between gap-2 animate-in fade-in">
+                  <span className="font-semibold flex items-center gap-1">
+                    <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                    Informe seu nome acima para enviar
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleQuickSendWithDefaultName}
+                    className="text-[11px] font-bold text-[#DF8035] hover:underline shrink-0 cursor-pointer"
+                  >
+                    Enviar direto →
+                  </button>
+                </div>
+              )}
+
+              {/* WhatsApp direct opened / fallback card */}
+              {whatsAppSent && (
+                <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-300 text-xs text-emerald-950 space-y-2 animate-in fade-in">
+                  <div className="flex items-center gap-2 font-bold text-emerald-900">
+                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>Pedido preparado com fotos dos itens!</span>
+                  </div>
+                  <p className="text-[11px] text-emerald-800">
+                    Se o WhatsApp não abriu automaticamente no seu navegador:
+                  </p>
+                  <a
+                    href={lastWhatsAppUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-2.5 px-3 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-colors"
+                  >
+                    <MessageSquareShare className="w-4 h-4" />
+                    <span>Abrir Conversa no WhatsApp (Clique Aqui)</span>
+                  </a>
+                </div>
+              )}
+
               <button
-                onClick={handleSendWhatsAppOrder}
-                className={`w-full py-3.5 px-4 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.99] ${
+                type="button"
+                onClick={() => handleSendWhatsAppOrder()}
+                className={`w-full py-3.5 px-4 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.99] cursor-pointer ${
                   isDeliveryUnderMinimum
-                    ? 'bg-stone-800 hover:bg-stone-700'
+                    ? 'bg-amber-600 hover:bg-amber-700'
                     : 'bg-[#25D366] hover:bg-[#20ba59]'
                 }`}
               >
                 <MessageSquareShare className="w-5 h-5" />
                 <span>
                   {isDeliveryUnderMinimum
-                    ? `Faltam R$ ${deliveryShortfall.toFixed(2).replace('.', ',')} para Entrega`
+                    ? `Faltam R$ ${deliveryShortfall.toFixed(2).replace('.', ',')} (ou Retirar na Loja)`
                     : 'Pedir no WhatsApp com Fotos dos Itens'}
                 </span>
               </button>
@@ -664,7 +752,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </button>
 
               <div className="flex items-center justify-between text-[11px] text-[#8C827A] pt-0.5">
-                <span>Separamos na hora na bancada</span>
+                <span>WhatsApp: {STORE_WHATSAPP_FORMATTED}</span>
                 <button
                   onClick={onClearCart}
                   className="text-red-500 hover:underline cursor-pointer"
