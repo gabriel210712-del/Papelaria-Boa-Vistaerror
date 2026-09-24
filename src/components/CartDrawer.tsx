@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { X, Plus, Minus, Trash2, MessageSquareShare, ShoppingBag, Truck, Store, MapPin, AlertCircle, Camera, Copy, Check } from 'lucide-react';
+import { X, Plus, Minus, Trash2, MessageSquareShare, ShoppingBag, Truck, Store, MapPin, AlertCircle, Camera, Copy, Check, Printer, FileText } from 'lucide-react';
 import { CartItem } from '../types';
 import { getProductFullImageUrl } from '../utils/productUtils';
+import { buildOrderPayload, getOrderPrintUrl } from '../utils/orderEncoder';
 
 const MINIMUM_DELIVERY_ORDER = 50.0;
 
@@ -96,7 +97,23 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       }
     }
     message += `\n🏷️ *TOTAL GERAL DO PEDIDO:* R$ ${grandTotal.toFixed(2).replace('.', ',')}\n\n`;
-    message += `📸 _As imagens dos produtos acima foram anexadas via link para conferência imediata da atendente._\n\n`;
+
+    const orderPayload = buildOrderPayload({
+      customerName,
+      deliveryMethod,
+      neighborhoodType,
+      customNeighborhood,
+      addressOrNotes,
+      items,
+      total,
+      deliveryFee,
+      grandTotal,
+    });
+    const printPdfUrl = getOrderPrintUrl(orderPayload, true);
+
+    message += `📄 *IMPRIMIR PEDIDO / ORDEM DE SEPARAÇÃO EM PDF (COM FOTOS):*\n`;
+    message += `👉 ${printPdfUrl}\n\n`;
+    message += `📸 _As imagens dos produtos e a ordem em PDF foram anexadas para impressão e conferência imediata da equipe da loja._\n\n`;
     message += `_Enviado pelo catálogo online da Papelaria Boa Vista._`;
 
     return message;
@@ -161,6 +178,25 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       setHasCopied(true);
       setTimeout(() => setHasCopied(false), 3500);
     }
+  };
+
+  const handleOpenPrintPreview = () => {
+    if (items.length === 0) return;
+    if (!validateOrder()) return;
+
+    const orderPayload = buildOrderPayload({
+      customerName,
+      deliveryMethod,
+      neighborhoodType,
+      customNeighborhood,
+      addressOrNotes,
+      items,
+      total,
+      deliveryFee,
+      grandTotal,
+    });
+    const printPdfUrl = getOrderPrintUrl(orderPayload, true);
+    window.open(printPdfUrl, '_blank');
   };
 
   return (
@@ -279,15 +315,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   ))}
                 </div>
 
-                {/* Photos notice card */}
+                {/* Photos & PDF notice card */}
                 <div className="bg-emerald-50/90 border border-emerald-200/80 rounded-2xl p-3 flex items-start gap-2.5 text-xs text-emerald-950">
                   <div className="w-6 h-6 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-700 shrink-0 mt-0.5">
                     <Camera className="w-3.5 h-3.5" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <span className="font-bold block text-emerald-900">Fotos dos itens anexadas ao pedido</span>
+                    <span className="font-bold block text-emerald-900">Fotos e PDF anexados ao pedido</span>
                     <p className="text-[11px] text-emerald-800 leading-snug mt-0.5">
-                      A mensagem enviada ao WhatsApp inclui a foto em alta resolução de cada produto selecionado para a equipe da loja conferir e separar o item exato.
+                      A mensagem do WhatsApp já inclui as fotos dos produtos e o link para <strong>imprimir o pedido em PDF com fotos e quantidades</strong> para separação rápida na bancada.
                     </p>
                   </div>
                 </div>
@@ -597,6 +633,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     ? `Faltam R$ ${deliveryShortfall.toFixed(2).replace('.', ',')} para Entrega`
                     : 'Pedir no WhatsApp com Fotos dos Itens'}
                 </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleOpenPrintPreview}
+                className="w-full py-2.5 px-3 rounded-xl border border-[#241E19] bg-white hover:bg-[#FAF7F2] text-[#241E19] text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-2xs hover:border-[#DF8035] active:scale-[0.99] cursor-pointer"
+                title="Abre a ordem de separação com fotos de cada produto pronta para impressão ou salvar em PDF"
+              >
+                <Printer className="w-4 h-4 text-[#DF8035]" />
+                <span>Imprimir Pedido com Fotos em PDF</span>
               </button>
 
               <button
