@@ -22,7 +22,7 @@ import { ContactModal } from './ContactModal';
 import { CartDrawer } from './CartDrawer';
 import { BoaVistaLogo } from './BoaVistaLogo';
 import { ProductDetailModal } from './ProductDetailModal';
-import { isProductNew } from '../utils/productUtils';
+import { isProductNew, getProductFullImageUrl } from '../utils/productUtils';
 
 export const LandingPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
@@ -532,11 +532,15 @@ export const LandingPage: React.FC = () => {
                         </button>
 
                         <a
-                          href={`https://wa.me/553488710753?text=${encodeURIComponent(`Olá! Gostaria de pedir o item: ${product.name} (R$ ${product.price.toFixed(2).replace('.', ',')}) na Papelaria Boa Vista.`)}`}
+                          href={`https://wa.me/553488710753?text=${encodeURIComponent(
+                            `Olá! Gostaria de pedir o item: ${product.name} (R$ ${product.price.toFixed(2).replace('.', ',')}) na Papelaria Boa Vista.${
+                              getProductFullImageUrl(product) ? `\n📸 Foto do produto: ${getProductFullImageUrl(product)}` : ''
+                            }`
+                          )}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          title="Pedir no WhatsApp"
+                          title="Pedir no WhatsApp com Foto"
                           className="p-2 rounded-xl text-xs bg-[#25D366] hover:bg-[#20ba59] text-white shadow-2xs hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center"
                         >
                           <MessageSquareShare className="w-4 h-4" />

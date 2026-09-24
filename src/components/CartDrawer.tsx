@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { X, Plus, Minus, Trash2, MessageSquareShare, ShoppingBag, Truck, Store, Check, MapPin, AlertCircle } from 'lucide-react';
+import { X, Plus, Minus, Trash2, MessageSquareShare, ShoppingBag, Truck, Store, MapPin, AlertCircle, Camera, Copy, Check } from 'lucide-react';
 import { CartItem } from '../types';
+import { getProductFullImageUrl } from '../utils/productUtils';
 
 const MINIMUM_DELIVERY_ORDER = 50.0;
 
@@ -26,6 +27,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [customNeighborhood, setCustomNeighborhood] = useState('');
   const [customerName, setCustomerName] = useState('');
   const [addressOrNotes, setAddressOrNotes] = useState('');
+  const [hasCopied, setHasCopied] = useState(false);
   const [validationErrors, setValidationErrors] = useState<{
     customerName?: string;
     customNeighborhood?: string;
@@ -52,10 +54,55 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const grandTotal = total + deliveryFee;
 
-  const handleSendWhatsAppOrder = () => {
-    if (items.length === 0) return;
+  const generateOrderMessage = () => {
+    let message = `🌻 *NOVO PEDIDO - PAPELARIA BOA VISTA* 🌻\n\n`;
+    message += `👤 *Cliente:* ${customerName.trim()}\n`;
 
-    // Validate mandatory fields & minimum delivery value
+    if (deliveryMethod === 'retirada') {
+      message += `📍 *Modalidade:* Retirada na Loja (Av. Elias Cruvinel, 970 - Bairro Boa Vista, Uberaba-MG)\n`;
+      if (addressOrNotes.trim()) {
+        message += `📝 *Observações:* ${addressOrNotes.trim()}\n`;
+      }
+    } else {
+      const bairroDesc =
+        neighborhoodType === 'boa_vista'
+          ? 'Bairro Boa Vista (Entrega Grátis)'
+          : `${customNeighborhood.trim()} - Taxa: R$ 7,00`;
+      message += `🛵 *Modalidade:* Entrega a Domicílio (Uberaba)\n`;
+      message += `🏘️ *Bairro:* ${bairroDesc}\n`;
+      message += `🏠 *Endereço de Entrega:* ${addressOrNotes.trim()}\n`;
+    }
+
+    message += `\n📦 *ITENS DO PEDIDO (COM FOTOS):*\n`;
+    message += `━━━━━━━━━━━━━━━━━━━━━\n`;
+
+    items.forEach((item, index) => {
+      const sub = (item.product.price * item.quantity).toFixed(2).replace('.', ',');
+      const imageUrl = getProductFullImageUrl(item.product);
+      message += `\n${index + 1}️⃣ *${item.quantity}x ${item.product.name}*\n`;
+      message += `   • Subtotal: R$ ${sub}\n`;
+      if (imageUrl) {
+        message += `   • 📸 Imagem do item: ${imageUrl}\n`;
+      }
+    });
+
+    message += `\n━━━━━━━━━━━━━━━━━━━━━\n`;
+    message += `💰 *Subtotal dos Produtos:* R$ ${total.toFixed(2).replace('.', ',')}`;
+    if (deliveryMethod === 'entrega') {
+      if (neighborhoodType === 'boa_vista') {
+        message += `\n🛵 *Taxa de Entrega (Bairro Boa Vista):* GRÁTIS (R$ 0,00)`;
+      } else {
+        message += `\n🛵 *Taxa de Entrega (Outros Bairros):* R$ 7,00`;
+      }
+    }
+    message += `\n🏷️ *TOTAL GERAL DO PEDIDO:* R$ ${grandTotal.toFixed(2).replace('.', ',')}\n\n`;
+    message += `📸 _As imagens dos produtos acima foram anexadas via link para conferência imediata da atendente._\n\n`;
+    message += `_Enviado pelo catálogo online da Papelaria Boa Vista._`;
+
+    return message;
+  };
+
+  const validateOrder = (): boolean => {
     const errors: {
       customerName?: string;
       customNeighborhood?: string;
@@ -83,50 +130,37 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
     if (Object.keys(errors).length > 0) {
       setValidationErrors(errors);
-      return;
+      return false;
     }
 
-    // Clear errors if all valid
     setValidationErrors({});
+    return true;
+  };
 
-    let message = `🌻 *NOVO PEDIDO - PAPELARIA BOA VISTA* 🌻\n\n`;
-    message += `👤 *Cliente:* ${customerName.trim()}\n`;
+  const handleSendWhatsAppOrder = () => {
+    if (items.length === 0) return;
+    if (!validateOrder()) return;
 
-    if (deliveryMethod === 'retirada') {
-      message += `📍 *Modalidade:* Retirada na Loja (Av. Elias Cruvinel, 970 - Bairro Boa Vista, Uberaba-MG)\n`;
-      if (addressOrNotes.trim()) {
-        message += `📝 *Observações:* ${addressOrNotes.trim()}\n`;
-      }
-    } else {
-      const bairroDesc =
-        neighborhoodType === 'boa_vista'
-          ? 'Bairro Boa Vista (Entrega Grátis)'
-          : `${customNeighborhood.trim()} - Taxa: R$ 7,00`;
-      message += `🛵 *Modalidade:* Entrega a Domicílio (Uberaba)\n`;
-      message += `🏘️ *Bairro:* ${bairroDesc}\n`;
-      message += `🏠 *Endereço de Entrega:* ${addressOrNotes.trim()}\n`;
-    }
-    message += `\n📦 *Itens do Pedido:*\n`;
-
-    items.forEach((item, index) => {
-      const sub = (item.product.price * item.quantity).toFixed(2).replace('.', ',');
-      message += `${index + 1}. ${item.quantity}x ${item.product.name} (R$ ${sub})\n`;
-    });
-
-    message += `\n💰 *Subtotal:* R$ ${total.toFixed(2).replace('.', ',')}`;
-    if (deliveryMethod === 'entrega') {
-      if (neighborhoodType === 'boa_vista') {
-        message += `\n🛵 *Taxa de Entrega (Bairro Boa Vista):* GRÁTIS (R$ 0,00)`;
-      } else {
-        message += `\n🛵 *Taxa de Entrega (Outros Bairros):* R$ 7,00`;
-      }
-    }
-    message += `\n*TOTAL GERAL:* R$ ${grandTotal.toFixed(2).replace('.', ',')}\n\n`;
-    message += `_Enviado pelo catálogo online da Papelaria Boa Vista._`;
-
+    const message = generateOrderMessage();
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/553488710753?text=${encodedMessage}`;
     window.open(whatsappUrl, '_blank');
+  };
+
+  const handleCopyOrderText = async () => {
+    if (items.length === 0) return;
+    if (!validateOrder()) return;
+
+    const message = generateOrderMessage();
+    try {
+      await navigator.clipboard.writeText(message);
+      setHasCopied(true);
+      setTimeout(() => setHasCopied(false), 3500);
+    } catch {
+      // Fallback
+      setHasCopied(true);
+      setTimeout(() => setHasCopied(false), 3500);
+    }
   };
 
   return (
@@ -205,6 +239,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           R$ {item.product.price.toFixed(2).replace('.', ',')}
                         </div>
 
+                        <div className="flex items-center gap-1 text-[10px] text-emerald-700 font-semibold mt-1">
+                          <Camera className="w-3 h-3 text-emerald-600 shrink-0" />
+                          <span>Foto inclusa no pedido</span>
+                        </div>
+
                         {/* Quantity Controls */}
                         <div className="flex items-center gap-2 mt-2">
                           <div className="flex items-center border border-[#E8E3DC] rounded-lg bg-[#FAF7F2] p-0.5">
@@ -238,6 +277,19 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       </div>
                     </div>
                   ))}
+                </div>
+
+                {/* Photos notice card */}
+                <div className="bg-emerald-50/90 border border-emerald-200/80 rounded-2xl p-3 flex items-start gap-2.5 text-xs text-emerald-950">
+                  <div className="w-6 h-6 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-700 shrink-0 mt-0.5">
+                    <Camera className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <span className="font-bold block text-emerald-900">Fotos dos itens anexadas ao pedido</span>
+                    <p className="text-[11px] text-emerald-800 leading-snug mt-0.5">
+                      A mensagem enviada ao WhatsApp inclui a foto em alta resolução de cada produto selecionado para a equipe da loja conferir e separar o item exato.
+                    </p>
+                  </div>
                 </div>
 
                 {/* Delivery Option */}
@@ -543,8 +595,26 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 <span>
                   {isDeliveryUnderMinimum
                     ? `Faltam R$ ${deliveryShortfall.toFixed(2).replace('.', ',')} para Entrega`
-                    : 'Pedir no WhatsApp em 3 Toques'}
+                    : 'Pedir no WhatsApp com Fotos dos Itens'}
                 </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleCopyOrderText}
+                className="w-full py-2 px-3 rounded-lg border border-[#E8E3DC] bg-[#FAF7F2] hover:bg-stone-100 text-[#6E645D] hover:text-[#241E19] text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              >
+                {hasCopied ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-emerald-600" />
+                    <span className="text-emerald-700 font-bold">Mensagem e fotos copiadas para a área de transferência!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>Copiar texto do pedido com fotos</span>
+                  </>
+                )}
               </button>
 
               <div className="flex items-center justify-between text-[11px] text-[#8C827A] pt-0.5">
