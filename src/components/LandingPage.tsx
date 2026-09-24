@@ -23,6 +23,7 @@ import { ContactModal } from './ContactModal';
 import { CartDrawer } from './CartDrawer';
 import { BoaVistaLogo } from './BoaVistaLogo';
 import { ProductDetailModal } from './ProductDetailModal';
+import { FeaturedCarousel } from './FeaturedCarousel';
 import { isProductNew, getProductFullImageUrl } from '../utils/productUtils';
 
 export type SortOption = 'padrao' | 'preco-crescente' | 'preco-decrescente' | 'nome-az' | 'nome-za';
@@ -440,6 +441,14 @@ export const LandingPage: React.FC = () => {
             </div>
           </div>
         </section>
+
+        {/* PRODUTOS EM DESTAQUE - CARROSSEL COM NOVIDADES E MAIS VENDIDOS */}
+        <FeaturedCarousel
+          products={PRODUCTS}
+          onAddToCart={handleAddToCart}
+          onOpenDetail={setSelectedDetailProduct}
+          recentlyAddedId={recentlyAddedId}
+        />
 
         {/* PILL CATEGORIES (PREVIOUS ORIGINAL DESIGN + MARCAS FILTER) */}
         <section id="catalogo" className="px-4 sm:px-8 pt-4 pb-4 max-w-7xl mx-auto space-y-3 pl-8 sm:pl-16 lg:pl-20">
