@@ -8,8 +8,55 @@ import canetaBicVermelhaImg from '../assets/images/regenerated_image_17902133421
 import canetaBicPretaImg from '../assets/images/regenerated_image_1790213535558.webp';
 import squishyButterImg from '../assets/images/regenerated_image_1790216425651.webp';
 import mochilaRb27422AzulImg from '../assets/images/regenerated_image_1790217299888.png';
+import lapisFaberCastell12CoresImg from '../assets/images/lapis_faber_castell_ecolapis_12_cores.webp';
 
 export const PRODUCTS: Product[] = [
+  {
+    id: 'lapis-de-cor-12-cores-faber-castell-ecolapis',
+    name: 'Lápis de Cor 12 Cores Faber-Castell Ecolápis Sextavado',
+    category: 'Lápis de Cor',
+    brand: 'Faber-Castell',
+    tag: 'FABER-CASTELL ORIGINAL',
+    badge: 'Mais Vendido',
+    price: 19.90,
+    image: lapisFaberCastell12CoresImg,
+    description: 'Ecolápis 12 cores da Faber-Castell. Qualidade Faber-Castell reconhecida mundialmente com cores intensas e vivas, formato sextavado ergonômico e perfeita cobertura.',
+    details: {
+      fullDescription: `Ecolápis 12 cores da Faber-Castell.\n\nQualidade Faber-Castell, cores intensas e vivas, os lápis são sextavados proporcionando excelente conforto e firmeza na pega.\n\nLibere sua criatividade e se divirta com o Ecolápis de cor da Faber-Castell. Desenhos com cores mais vivas e perfeita cobertura para projetos escolares, ilustrações e atividades artísticas.\n\nProduzido com madeira 100% reflorestada e certificada pelo FSC (Forest Stewardship Council), garantindo total respeito ao meio ambiente.`,
+      differentiators: [
+        'Qualidade incomparável Faber-Castell: cores mais vivas e perfeita cobertura',
+        'Formato sextavado (hexagonal): pegada firme que não rola na mesa',
+        'Mina macia e resistente produzida com fórmula exclusiva fácil de apontar',
+        'Madeira 100% reflorestada e certificada FSC',
+        'Dimensões aproximadas: 17,5 cm de comprimento x 0,7 cm de diâmetro',
+      ],
+      technicalSpecs: {
+        'Marca': 'Faber-Castell',
+        'Modelo': 'Ecolápis',
+        'Tipo de lápis': 'De cor',
+        'Quantidade de cores': '12 cores',
+        'Formato': 'Sextavado',
+        'Com ponta dupla': 'Não',
+        'É lápis aquarelável': 'Não',
+        'É lápis pastel': 'Não',
+        'Unidades por embalagem': '12',
+        'Formato de venda': 'Unidade (estojo)',
+        'Dimensões do lápis': '17,5 cm comprimento x 0,7 cm diâmetro',
+        'Dimensões da embalagem': '21 cm altura x 17 cm largura',
+        'Peso': '160 g',
+        'Categoria': 'Lápis de Cor e Desenho',
+      },
+      packageContents: [
+        '12 EcoLápis de Cor Faber-Castell',
+      ],
+      careInstructions: [
+        'Armazenar em local seco e arejado',
+        'Evitar quedas para proteger a mina de grafite colorido',
+        'Usar apontadores afiados para melhor aproveitamento',
+      ],
+    },
+    createdAt: '2026-09-24T12:00:00.000Z',
+  },
   {
     id: 'caneta-bic-cristal-preta-unidade',
     name: 'Caneta Esferográfica BIC Cristal Preta Dura Mais – Ponta Média 1.0mm (Unidade)',

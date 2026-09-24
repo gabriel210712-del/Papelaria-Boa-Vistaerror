@@ -246,10 +246,10 @@ export const LandingPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             {/* Left Column: Authentic Brand Headline & Delivery Flow */}
             <div className="lg:col-span-6 space-y-6">
-              {/* Badge: NO BAIRRO DESDE 2009 */}
+              {/* Badge: NO BAIRRO DESDE 1998 */}
               <div>
                 <span className="inline-block px-3.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider text-[#DF8035] border border-[#F5D8BF] bg-[#FAF7F2] shadow-2xs">
-                  NO BAIRRO DESDE 2009
+                  NO BAIRRO DESDE 1998
                 </span>
               </div>
 
