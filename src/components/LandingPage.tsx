@@ -40,6 +40,15 @@ export const LandingPage: React.FC = () => {
   const [selectedDetailProduct, setSelectedDetailProduct] = useState<Product | null>(null);
   const [recentlyAddedId, setRecentlyAddedId] = useState<string | null>(null);
 
+  const isSearchActive = searchQuery.trim().length > 0;
+
+  // Auto-scroll to top smoothly when user performs a search
+  useEffect(() => {
+    if (isSearchActive) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [isSearchActive]);
+
   // Dynamic current date updated daily with correct day, month, and year
   const [currentDate, setCurrentDate] = useState(() => {
     const now = new Date();
@@ -222,8 +231,15 @@ export const LandingPage: React.FC = () => {
           {/* Logo & Brand */}
           <div className="flex items-center justify-between w-full md:w-auto">
             <button 
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedCategory('Todos');
+                setSelectedBrand('Todas');
+                setSortBy('padrao');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }} 
               className="group text-left cursor-pointer"
+              title="Voltar ao início da Papelaria Boa Vista"
             >
               <BoaVistaLogo />
             </button>
@@ -339,116 +355,152 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        {/* HERO SECTION MATCHING Capturar.PNG */}
-        <section className="px-4 sm:px-8 pt-10 sm:pt-14 pb-12 max-w-7xl mx-auto pl-8 sm:pl-16 lg:pl-20">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
-            {/* Left Column: Authentic Brand Headline & Delivery Flow */}
-            <div className="lg:col-span-6 space-y-6">
-              {/* Badge: NO BAIRRO DESDE 1998 */}
+        {/* HERO & FEATURED SECTIONS - Only displayed when not searching */}
+        {!isSearchActive ? (
+          <>
+            {/* HERO SECTION MATCHING Capturar.PNG */}
+            <section className="px-4 sm:px-8 pt-10 sm:pt-14 pb-12 max-w-7xl mx-auto pl-8 sm:pl-16 lg:pl-20">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+                {/* Left Column: Authentic Brand Headline & Delivery Flow */}
+                <div className="lg:col-span-6 space-y-6">
+                  {/* Badge: NO BAIRRO DESDE 1998 */}
+                  <div>
+                    <span className="inline-block px-3.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider text-[#DF8035] border border-[#F5D8BF] bg-white/90 shadow-2xs">
+                      NO BAIRRO DESDE 1998
+                    </span>
+                  </div>
+
+                  {/* Exact Editorial Title: Material bom, pedido em três toques. */}
+                  <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-serif font-extrabold text-[#241E19] leading-[1.08] tracking-tight">
+                    Material bom,<br />
+                    <span className="text-[#DF8035]">pedido em três</span><br />
+                    toques.
+                  </h1>
+
+                  {/* Exact Description */}
+                  <p className="text-[#6E645D] text-base sm:text-lg leading-relaxed max-w-lg font-normal">
+                    Monte seu carrinho com calma, escolha retirada ou entrega e mande tudo pronto no nosso WhatsApp. A gente separa e avisa quando estiver na bancada.
+                  </p>
+
+                  {/* Address and Hours Pills */}
+                  <div className="space-y-2.5 pt-1">
+                    <div>
+                      <button
+                        onClick={() => setIsContactOpen(true)}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-[#6E645D] bg-white border border-[#E8E3DC] hover:border-[#DF8035] hover:text-[#241E19] transition-all shadow-2xs text-left cursor-pointer"
+                      >
+                        <MapPin className="w-4 h-4 text-[#DF8035] shrink-0" />
+                        <span>Avenida Elias Cruvinel, 970 — Bairro Boa Vista, Uberaba/MG</span>
+                      </button>
+                    </div>
+
+                    <div>
+                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-[#6E645D] bg-white border border-[#E8E3DC] shadow-2xs">
+                        <Clock className="w-4 h-4 text-[#DF8035] shrink-0" />
+                        <span>Seg a Sex 8h30–18h30 · Sáb 9h–14h</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Column: 3 Polaroid-style Photo Cards Fan (as seen in Capturar.PNG) */}
+                <div className="lg:col-span-6 flex items-center justify-center pt-4 lg:pt-0">
+                  <div className="relative flex items-center justify-center w-full max-w-lg py-6">
+                    {/* Left Angled Card */}
+                    {heroProducts[0] && (
+                      <div 
+                        onClick={() => setSelectedDetailProduct(heroProducts[0])}
+                        className="w-36 sm:w-44 lg:w-48 aspect-3/4 bg-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3 shadow-xl border border-white/80 transform -rotate-8 hover:-rotate-4 hover:scale-105 transition-all duration-300 cursor-pointer z-10 -mr-6 sm:-mr-8 overflow-hidden group"
+                      >
+                        <div className="w-full h-full rounded-xl sm:rounded-2xl bg-[#FAF8F5] p-2 flex items-center justify-center overflow-hidden relative">
+                          <img
+                            key={heroProducts[0].id}
+                            src={heroProducts[0].image}
+                            alt={heroProducts[0].name}
+                            className="w-full h-full object-contain filter drop-shadow-sm transition-opacity duration-700 ease-in-out"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Center Raised Card */}
+                    {heroProducts[1] && (
+                      <div 
+                        onClick={() => setSelectedDetailProduct(heroProducts[1])}
+                        className="w-40 sm:w-48 lg:w-52 aspect-3/4 bg-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3 shadow-2xl border border-white/90 transform hover:scale-105 transition-all duration-300 cursor-pointer z-20 overflow-hidden group"
+                      >
+                        <div className="w-full h-full rounded-xl sm:rounded-2xl bg-[#FAF8F5] p-2 flex items-center justify-center overflow-hidden relative">
+                          <img
+                            key={heroProducts[1].id}
+                            src={heroProducts[1].image}
+                            alt={heroProducts[1].name}
+                            className="w-full h-full object-contain filter drop-shadow-sm transition-opacity duration-700 ease-in-out"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Right Angled Card */}
+                    {heroProducts[2] && (
+                      <div 
+                        onClick={() => setSelectedDetailProduct(heroProducts[2])}
+                        className="w-36 sm:w-44 lg:w-48 aspect-3/4 bg-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3 shadow-xl border border-white/80 transform rotate-8 hover:rotate-4 hover:scale-105 transition-all duration-300 cursor-pointer z-10 -ml-6 sm:-ml-8 overflow-hidden group"
+                      >
+                        <div className="w-full h-full rounded-xl sm:rounded-2xl bg-[#FAF8F5] p-2 flex items-center justify-center overflow-hidden relative">
+                          <img
+                            key={heroProducts[2].id}
+                            src={heroProducts[2].image}
+                            alt={heroProducts[2].name}
+                            className="w-full h-full object-contain filter drop-shadow-sm transition-opacity duration-700 ease-in-out"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* PRODUTOS EM DESTAQUE - CARROSSEL COM NOVIDADES E MAIS VENDIDOS */}
+            <FeaturedCarousel
+              products={PRODUCTS}
+              onAddToCart={handleAddToCart}
+              onOpenDetail={setSelectedDetailProduct}
+              recentlyAddedId={recentlyAddedId}
+            />
+          </>
+        ) : (
+          /* FOCUSED SEARCH RESULTS BANNER - Shown only during search so initial hero is hidden */
+          <section className="px-4 sm:px-8 pt-6 pb-2 max-w-7xl mx-auto pl-8 sm:pl-16 lg:pl-20 animate-card-fade-in">
+            <div className="bg-gradient-to-r from-[#FFF5ED] via-white to-[#FAF8F5] rounded-3xl p-5 sm:p-7 border border-[#F5D8BF] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <span className="inline-block px-3.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider text-[#DF8035] border border-[#F5D8BF] bg-white/90 shadow-2xs">
-                  NO BAIRRO DESDE 1998
-                </span>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider text-[#DF8035] bg-[#DF8035]/10 border border-[#DF8035]/20 mb-2">
+                  <Search className="w-3.5 h-3.5" />
+                  <span>Modo Busca Ativo</span>
+                </div>
+                <h1 className="text-2xl sm:text-3xl font-serif font-extrabold text-[#241E19]">
+                  Resultados para: <span className="text-[#DF8035]">"{searchQuery}"</span>
+                </h1>
+                <p className="text-xs sm:text-sm text-[#6E645D] mt-1">
+                  {filteredProducts.length === 0
+                    ? 'Nenhum produto encontrado com este termo.'
+                    : `Exibindo apenas os ${filteredProducts.length} ${filteredProducts.length === 1 ? 'produto que corresponde' : 'produtos que correspondem'} à sua busca.`}
+                </p>
               </div>
 
-              {/* Exact Editorial Title: Material bom, pedido em três toques. */}
-              <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-serif font-extrabold text-[#241E19] leading-[1.08] tracking-tight">
-                Material bom,<br />
-                <span className="text-[#DF8035]">pedido em três</span><br />
-                toques.
-              </h1>
-
-              {/* Exact Description */}
-              <p className="text-[#6E645D] text-base sm:text-lg leading-relaxed max-w-lg font-normal">
-                Monte seu carrinho com calma, escolha retirada ou entrega e mande tudo pronto no nosso WhatsApp. A gente separa e avisa quando estiver na bancada.
-              </p>
-
-              {/* Address and Hours Pills */}
-              <div className="space-y-2.5 pt-1">
-                <div>
-                  <button
-                    onClick={() => setIsContactOpen(true)}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-[#6E645D] bg-white border border-[#E8E3DC] hover:border-[#DF8035] hover:text-[#241E19] transition-all shadow-2xs text-left"
-                  >
-                    <MapPin className="w-4 h-4 text-[#DF8035] shrink-0" />
-                    <span>Avenida Elias Cruvinel, 970 — Bairro Boa Vista, Uberaba/MG</span>
-                  </button>
-                </div>
-
-                <div>
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-[#6E645D] bg-white border border-[#E8E3DC] shadow-2xs">
-                    <Clock className="w-4 h-4 text-[#DF8035] shrink-0" />
-                    <span>Seg a Sex 8h30–18h30 · Sáb 9h–14h</span>
-                  </div>
-                </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold text-[#241E19] bg-white hover:bg-stone-50 border border-[#E8E3DC] hover:border-[#DF8035] transition-all cursor-pointer shadow-2xs"
+                >
+                  <X className="w-4 h-4 text-red-500" />
+                  <span>Limpar busca e ver tudo</span>
+                </button>
               </div>
             </div>
-
-            {/* Right Column: 3 Polaroid-style Photo Cards Fan (as seen in Capturar.PNG) */}
-            <div className="lg:col-span-6 flex items-center justify-center pt-4 lg:pt-0">
-              <div className="relative flex items-center justify-center w-full max-w-lg py-6">
-                {/* Left Angled Card */}
-                {heroProducts[0] && (
-                  <div 
-                    onClick={() => setSelectedDetailProduct(heroProducts[0])}
-                    className="w-36 sm:w-44 lg:w-48 aspect-3/4 bg-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3 shadow-xl border border-white/80 transform -rotate-8 hover:-rotate-4 hover:scale-105 transition-all duration-300 cursor-pointer z-10 -mr-6 sm:-mr-8 overflow-hidden group"
-                  >
-                    <div className="w-full h-full rounded-xl sm:rounded-2xl bg-[#FAF8F5] p-2 flex items-center justify-center overflow-hidden relative">
-                      <img
-                        key={heroProducts[0].id}
-                        src={heroProducts[0].image}
-                        alt={heroProducts[0].name}
-                        className="w-full h-full object-contain filter drop-shadow-sm transition-opacity duration-700 ease-in-out"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* Center Raised Card */}
-                {heroProducts[1] && (
-                  <div 
-                    onClick={() => setSelectedDetailProduct(heroProducts[1])}
-                    className="w-40 sm:w-48 lg:w-52 aspect-3/4 bg-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3 shadow-2xl border border-white/90 transform hover:scale-105 transition-all duration-300 cursor-pointer z-20 overflow-hidden group"
-                  >
-                    <div className="w-full h-full rounded-xl sm:rounded-2xl bg-[#FAF8F5] p-2 flex items-center justify-center overflow-hidden relative">
-                      <img
-                        key={heroProducts[1].id}
-                        src={heroProducts[1].image}
-                        alt={heroProducts[1].name}
-                        className="w-full h-full object-contain filter drop-shadow-sm transition-opacity duration-700 ease-in-out"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* Right Angled Card */}
-                {heroProducts[2] && (
-                  <div 
-                    onClick={() => setSelectedDetailProduct(heroProducts[2])}
-                    className="w-36 sm:w-44 lg:w-48 aspect-3/4 bg-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3 shadow-xl border border-white/80 transform rotate-8 hover:rotate-4 hover:scale-105 transition-all duration-300 cursor-pointer z-10 -ml-6 sm:-ml-8 overflow-hidden group"
-                  >
-                    <div className="w-full h-full rounded-xl sm:rounded-2xl bg-[#FAF8F5] p-2 flex items-center justify-center overflow-hidden relative">
-                      <img
-                        key={heroProducts[2].id}
-                        src={heroProducts[2].image}
-                        alt={heroProducts[2].name}
-                        className="w-full h-full object-contain filter drop-shadow-sm transition-opacity duration-700 ease-in-out"
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* PRODUTOS EM DESTAQUE - CARROSSEL COM NOVIDADES E MAIS VENDIDOS */}
-        <FeaturedCarousel
-          products={PRODUCTS}
-          onAddToCart={handleAddToCart}
-          onOpenDetail={setSelectedDetailProduct}
-          recentlyAddedId={recentlyAddedId}
-        />
+          </section>
+        )}
 
         {/* PILL CATEGORIES (PREVIOUS ORIGINAL DESIGN + MARCAS FILTER) */}
         <section id="catalogo" className="px-4 sm:px-8 pt-4 pb-4 max-w-7xl mx-auto space-y-3 pl-8 sm:pl-16 lg:pl-20">
@@ -532,7 +584,11 @@ export const LandingPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <div>
               <h2 className="text-2xl sm:text-3xl font-serif font-extrabold text-[#241E19]">
-                {selectedCategory === 'Todos' ? 'Todo o catálogo' : selectedCategory}
+                {isSearchActive
+                  ? 'Itens encontrados'
+                  : selectedCategory === 'Todos'
+                  ? 'Todo o catálogo'
+                  : selectedCategory}
               </h2>
               <span className="text-xs sm:text-sm text-[#8C827A] font-medium">
                 {filteredProducts.length} {filteredProducts.length === 1 ? 'produto encontrado' : 'produtos encontrados'}
@@ -602,12 +658,34 @@ export const LandingPage: React.FC = () => {
 
           {/* Clean Rounded Card Grid Matching the Reference */}
           {filteredProducts.length === 0 ? (
-            <div className="bg-white rounded-3xl p-12 text-center border border-[#E8E3DC] max-w-lg mx-auto shadow-xs">
+            <div className="bg-white rounded-3xl p-10 sm:p-14 text-center border border-[#E8E3DC] max-w-lg mx-auto shadow-xs">
               <PackageCheck className="w-12 h-12 text-[#DF8035] mx-auto mb-3 opacity-70" />
-              <p className="font-serif text-lg text-[#241E19] font-bold">Nenhum produto encontrado</p>
-              <p className="text-xs text-[#6E645D] mt-1 mb-4">
-                Tente buscar por outro termo ou limpe os filtros.
+              <p className="font-serif text-xl text-[#241E19] font-bold">
+                {isSearchActive
+                  ? `Nenhum produto encontrado para "${searchQuery}"`
+                  : 'Nenhum produto encontrado'}
               </p>
+              <p className="text-xs text-[#6E645D] mt-1.5 mb-5">
+                {isSearchActive
+                  ? 'Tente pesquisar por outro termo ou clique em uma das opções sugeridas:'
+                  : 'Tente buscar por outro termo ou limpe os filtros.'}
+              </p>
+
+              {isSearchActive && (
+                <div className="flex flex-wrap justify-center gap-2 mb-6">
+                  {['Caneta BIC', 'Faber-Castell', 'Caderno Enaldinho', 'Rebecca Bonbon', 'Squishy'].map((sug) => (
+                    <button
+                      key={sug}
+                      type="button"
+                      onClick={() => setSearchQuery(sug)}
+                      className="px-3 py-1.5 rounded-full bg-stone-100 hover:bg-[#DF8035]/15 text-[#6E645D] hover:text-[#DF8035] text-xs font-semibold border border-stone-200 transition-colors cursor-pointer"
+                    >
+                      {sug}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               <button
                 onClick={() => {
                   setSelectedCategory('Todos');
@@ -615,9 +693,9 @@ export const LandingPage: React.FC = () => {
                   setSearchQuery('');
                   setSortBy('padrao');
                 }}
-                className="px-5 py-2.5 rounded-full bg-[#DF8035] text-white text-xs font-bold shadow-xs cursor-pointer"
+                className="px-5 py-2.5 rounded-full bg-[#DF8035] hover:bg-[#c46922] text-white text-xs font-bold shadow-xs cursor-pointer transition-colors"
               >
-                Ver Catálogo Completo
+                Limpar busca e ver catálogo completo
               </button>
             </div>
           ) : (
