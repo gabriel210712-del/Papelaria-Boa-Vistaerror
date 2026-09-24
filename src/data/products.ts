@@ -10,8 +10,100 @@ import squishyButterImg from '../assets/images/regenerated_image_1790216425651.w
 import mochilaRb27422AzulImg from '../assets/images/regenerated_image_1790217299888.png';
 import lapisFaberCastell12CoresImg from '../assets/images/lapis_faber_castell_ecolapis_12_cores.webp';
 import lapisFaberCastell24CoresImg from '../assets/images/lapis_faber_castell_ecolapis_24_cores.jpg';
+import papelChamexA4Img from '../assets/images/papel_sulfite_chamex_a4_75g_500f.png';
+import papelMagnumDigitalA4Img from '../assets/images/papel_sulfite_magnum_digital_a4_75g_500f.png';
 
 export const PRODUCTS: Product[] = [
+  {
+    id: 'papel-sulfite-magnum-digital-a4-75g-500f',
+    name: 'Papel Sulfite A4 Branco 500 Folhas Magnum Digital',
+    category: 'Papel Sulfite',
+    brand: 'Magnum',
+    tag: 'MAGNUM DIGITAL',
+    badge: '500 Folhas',
+    price: 29.80,
+    image: papelMagnumDigitalA4Img,
+    description: 'Papel Sulfite A4 Branco 500 Folhas Magnum Digital. Gramatura de 75g/m² ideal para impressões de alta qualidade, acabamento jateado e formato A4 (210x297mm) para diversas aplicações.',
+    details: {
+      fullDescription: `Papel Sulfite A4 Branco 500 Folhas Magnum Digital.\n\nO papel sulfite Magnum Digital 75g foi desenvolvido especialmente para proporcionar máxima nitidez e fidelidade de cores em impressões domésticas, escolares e corporativas.\n\nCom acabamento jateado e alvura balanceada de alta performance, garante excelente fixação da tinta e passagem suave pelas impressoras sem risco de atolamento.\n\nIdeal para documentos, relatórios, trabalhos escolares, apostilas e uso corporativo do dia a dia com excelente custo-benefício.`,
+      differentiators: [
+        'Gramatura de 75g/m² ideal para impressões de alta qualidade e nitidez',
+        'Formato padrão A4 (210 x 297 mm) para diversas aplicações e projetos escolares/escritório',
+        'Acabamento jateado que valoriza o contraste e a leitura de textos e gráficos',
+        'Embalagem prática com 500 folhas de alto rendimento',
+        'Excelente custo-benefício para escritórios, estudantes e papelaria profissional',
+      ],
+      technicalSpecs: {
+        'Marca': 'Magnum',
+        'Linha': 'Digital',
+        'Tipo de papel': 'Sulfite / Offset',
+        'Tamanho do papel': 'A4 (210 mm x 297 mm)',
+        'Gramagem': '75 g',
+        'Quantidade de folhas': '500',
+        'Cor': 'Branco',
+        'Acabamento': 'Jateado',
+        'Formato de venda': 'Unidade (Pacote com 500 folhas)',
+        'Peso': '2,3 kg',
+        'Comprimento x Largura': '29,7 cm x 21 cm',
+        'Categoria': 'Papelaria & Escritório',
+      },
+      packageContents: [
+        '01 Pacote de Papel Sulfite A4 Branco 500 Folhas Magnum Digital',
+      ],
+      careInstructions: [
+        'Conservar na embalagem original até o momento do uso',
+        'Armazenar em local seco, arejado e protegido do calor e umidade',
+        'Folhear as folhas antes de abastecer a impressora para evitar eletricidade estática',
+      ],
+    },
+    createdAt: '2026-09-24T15:31:00.000Z',
+  },
+  {
+    id: 'papel-sulfite-chamex-a4-75g-500f',
+    name: 'Papel Sulfite Profissional Chamex A4 75g 210x297mm - Pacote 500 Folhas Premium',
+    category: 'Papel Sulfite',
+    brand: 'Chamex',
+    tag: 'CHAMEX ORIGINAL',
+    badge: '500 Folhas Premium',
+    price: 31.90,
+    image: papelChamexA4Img,
+    description: 'Papel Sulfite Profissional Chamex A4 75g com 500 folhas. Gramatura de 75 g/m² para impressões de alta qualidade, 99% de não atolamento comprovado na impressora e 100% de florestas plantadas.',
+    details: {
+      fullDescription: `Papel Sulfite Profissional Chamex A4 75g 210x297mm - Pacote 500 Folhas Premium.\n\nO Chamex A4 75g garante excelente performance em todo tipo de impressora e copiadora, com 99% de não atolamento comprovado em testes laboratoriais.\n\nCom superfície uniforme e alvura balanceada, proporciona impressões e cópias nítidas, com cores vivas e textos de máxima definição. É a escolha número 1 em escritórios, escolas, home offices e ambientes profissionais.\n\nProduzido pela Sylvamo no Brasil a partir de 100% de florestas renováveis e plantadas, é biodegradável com embalagem 100% reciclável.`,
+      differentiators: [
+        '99% de não atolamento comprovado em impressoras e copiadoras',
+        'Gramatura de 75 g/m² para impressões nítidas, sem transparência excessiva',
+        'Formato A4 padrão (210 x 297 mm) ideal para documentos, relatórios, contratos e trabalhos escolares',
+        '100% de origem em florestas plantadas e renováveis (sustentável)',
+        'Papel biodegradável e embalagem protetora reciclável contra umidade',
+        'Alta performance tanto em impressoras jato de tinta (inkjet) quanto a laser',
+      ],
+      technicalSpecs: {
+        'Marca': 'Chamex (Sylvamo)',
+        'Linha': 'A4 75g Premium',
+        'Tipo de papel': 'Papel Sulfite / Offset',
+        'Tamanho do papel': '210mm x 297mm (Formato A4)',
+        'Gramagem (Gramatura)': '75 g/m²',
+        'Quantidade de folhas': '500 folhas',
+        'Cor': 'Branco',
+        'Acabamento': 'Fosco',
+        'Formato de venda': 'Unidade (Pacote com 500 folhas)',
+        'Peso aproximado': '2,3 kg',
+        'Dimensões': '29,7 cm (comprimento) x 21 cm (largura)',
+        'Origem': 'Feito no Brasil com florestas 100% plantadas',
+        'Desempenho': '99% de não atolamento garantido',
+      },
+      packageContents: [
+        '01 Pacote de Papel Sulfite Chamex A4 75g com 500 Folhas Premium',
+      ],
+      careInstructions: [
+        'Conservar na embalagem original até o momento do uso',
+        'Armazenar em local seco, arejado e protegido do calor e da umidade',
+        'Folhear as folhas antes de abastecer a bandeja da impressora para evitar eletricidade estática',
+      ],
+    },
+    createdAt: '2026-09-24T15:30:00.000Z',
+  },
   {
     id: 'lapis-de-cor-24-cores-faber-castell-ecolapis',
     name: 'Lápis de Cor 24 Cores Faber-Castell Ecolápis Sextavado',
