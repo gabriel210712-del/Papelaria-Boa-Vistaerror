@@ -40,6 +40,8 @@ export const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({
     'caixa-10-pct-papel-sulfite-magnum-a4-75g-5000f',
     'papel-sulfite-chamex-a4-75g-500f',
     'papel-sulfite-magnum-digital-a4-75g-500f',
+    'lapis-de-cor-48-cores-faber-castell-ecolapis',
+    'lapis-de-cor-36-cores-faber-castell-ecolapis',
     'lapis-de-cor-24-cores-faber-castell-ecolapis',
     'lapis-de-cor-12-cores-faber-castell-ecolapis',
     'caneta-bic-cristal-azul-unidade',

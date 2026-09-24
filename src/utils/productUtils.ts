@@ -34,6 +34,8 @@ export const CLEAN_PRODUCT_IMAGES: Record<string, string> = {
   'mochila-rebecca-bonbon-rb27422-azul': '/product-images/mochila-rebecca-bonbon-rb27422-azul.png',
   'lapis-de-cor-12-cores-faber-castell-ecolapis': '/product-images/lapis-de-cor-12-cores-faber-castell-ecolapis.webp',
   'lapis-de-cor-24-cores-faber-castell-ecolapis': '/product-images/lapis-de-cor-24-cores-faber-castell-ecolapis.jpg',
+  'lapis-de-cor-36-cores-faber-castell-ecolapis': '/product-images/lapis-de-cor-36-cores-faber-castell-ecolapis.png',
+  'lapis-de-cor-48-cores-faber-castell-ecolapis': '/product-images/lapis-de-cor-48-cores-faber-castell-ecolapis.png',
   'papel-sulfite-chamex-a4-75g-500f': '/product-images/papel-sulfite-chamex-a4-75g-500f.png',
   'papel-sulfite-magnum-digital-a4-75g-500f': '/product-images/papel-sulfite-magnum-digital-a4-75g-500f.png',
   'caixa-10-pct-papel-sulfite-magnum-a4-75g-5000f': '/product-images/caixa-10-pct-papel-sulfite-magnum-a4-75g-5000f.png',

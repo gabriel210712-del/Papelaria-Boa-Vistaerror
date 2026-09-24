@@ -10,12 +10,106 @@ import squishyButterImg from '../assets/images/regenerated_image_1790216425651.w
 import mochilaRb27422AzulImg from '../assets/images/regenerated_image_1790217299888.png';
 import lapisFaberCastell12CoresImg from '../assets/images/lapis_faber_castell_ecolapis_12_cores.webp';
 import lapisFaberCastell24CoresImg from '../assets/images/lapis_faber_castell_ecolapis_24_cores.jpg';
+import lapisFaberCastell36CoresImg from '../assets/images/lapis_faber_castell_ecolapis_36_cores.png';
+import lapisFaberCastell48CoresImg from '../assets/images/lapis_faber_castell_ecolapis_48_cores.png';
 import papelChamexA4Img from '../assets/images/papel_sulfite_chamex_a4_75g_500f.png';
 import papelMagnumDigitalA4Img from '../assets/images/papel_sulfite_magnum_digital_a4_75g_500f.png';
 import caixaMagnumA4Img from '../assets/images/caixa_10_pct_papel_sulfite_magnum_a4_75g_5000f.png';
 import caixaChamexA4Img from '../assets/images/caixa_10_pct_papel_sulfite_chamex_a4_75g_5000f.png';
 
 export const PRODUCTS: Product[] = [
+  {
+    id: 'lapis-de-cor-36-cores-faber-castell-ecolapis',
+    name: 'Lápis De Cor Faber-Castell Ecolápis Ponta Max 36 Cores',
+    category: 'Lápis de Cor',
+    brand: 'Faber-Castell',
+    tag: 'FABER-CASTELL ORIGINAL',
+    badge: '36 Cores Ponta Max',
+    price: 79.00,
+    image: lapisFaberCastell36CoresImg,
+    description: 'Lápis de Cor Faber-Castell Ecolápis Ponta Max 36 Cores. Graduação 2B ideal para traços suaves, detalhes finos e sombreamento, madeira 100% sustentável e ponta Max resistente.',
+    details: {
+      fullDescription: `Desperte a sua criatividade com o Lápis De Cor Faber-Castell Ecolápis Ponta Max 36 Cores.\n\nEste conjunto premium de lápis de cor da renomada marca Faber-Castell é perfeito para artistas de todas as idades, estudantes e entusiastas que valorizam a qualidade, o conforto e a durabilidade.\n\nCom 36 cores vibrantes e ricas, você pode criar desenhos e ilustrações impressionantes com traço macio e excelente cobertura no papel.\n\nCada lápis é feito com madeira 100% sustentável e de manejo responsável (certificação FSC) e possui a exclusiva Ponta Max resistente com processo de fabricação Sekural que minimiza a quebra da mina.\n\nO modelo Lápis de Cor 36 cores Premium (Ref. 120136 / 120136G) possui corpo sextavado para firmeza ergonômica e graduação 2B, ideal para sombreamento suave, degradês harmoniosos e detalhes finos. Não é aquarelável nem pastel, proporcionando cores puras e secas de padrão internacional.`,
+      differentiators: [
+        'Conjunto com 36 cores vibrantes para criatividade ilimitada',
+        'Graduação 2B ideal para sombreamento uniforme, detalhes finos e traço macio',
+        'Ponta MAX Resistente: técnica Sekural exclusiva Faber-Castell contra quebras da mina',
+        'Feito com madeira 100% sustentável e reflorestada (certificação FSC) para menor impacto ambiental',
+        'Formato sextavado (hexagonal): proporciona ergonomia e firmeza, impedindo o lápis de rolar',
+        'Não aquarelável e não pastel: perfeito para desenhos artísticos, escolares e livros de colorir',
+      ],
+      technicalSpecs: {
+        'Marca': 'Faber-Castell',
+        'Modelo': 'Ecolápis Ponta Max 36 cores (Ref. 120136 / 120136G)',
+        'Tipo de lápis': 'Lápis de cor permanente',
+        'Graduação': '2B (traço macio e ótima cobertura)',
+        'Quantidade de cores': '36 cores vibrantes',
+        'Formato do corpo': 'Sextavado / Hexagonal',
+        'Com ponta dupla': 'Não',
+        'É lápis aquarelável': 'Não',
+        'É lápis pastel': 'Não',
+        'Formato de venda': 'Kit / Estojo com 36 unidades',
+        'Unidades por kit': '36',
+        'Origem': 'Brasil (Faber-Castell desde 1761)',
+        'Certificação ambiental': 'Madeira 100% reflorestada (FSC)',
+      },
+      packageContents: [
+        '01 Estojo Cartonado Oficial Faber-Castell com 36 Lápis de Cor Ecolápis Ponta Max Sextavados',
+      ],
+      careInstructions: [
+        'Apontar preferencialmente com apontadores originais Faber-Castell para melhor conservação da ponta',
+        'Evitar quedas sobre pisos rígidos para preservar a mina colorida',
+        'Armazenar em local seco e arejado',
+      ],
+    },
+    createdAt: '2026-09-24T15:56:00.000Z',
+  },
+  {
+    id: 'lapis-de-cor-48-cores-faber-castell-ecolapis',
+    name: 'Lápis De Cor Faber-Castell Ecolápis Sextavado 48 Cores',
+    category: 'Lápis de Cor',
+    brand: 'Faber-Castell',
+    tag: 'FABER-CASTELL ORIGINAL',
+    badge: '48 Cores Vivas',
+    price: 89.00,
+    image: lapisFaberCastell48CoresImg,
+    description: 'Lápis de Cor Faber-Castell Eco Lápis Max Resistente com 48 cores vibrantes e intensas. Graduação 2B para traços macios e ótima cobertura, formato sextavado e madeira 100% sustentável.',
+    details: {
+      fullDescription: `Apresentamos o Lápis de Cor Faber-Castell Eco Lápis Max Resistente com 48 cores vibrantes e intensas para dar vida aos seus desenhos e projetos.\n\nEste conjunto de lápis de cor é ideal para artistas, estudantes e entusiastas de todas as idades que valorizam a qualidade, o conforto e a durabilidade.\n\nCada lápis é feito com madeira sustentável 100% reflorestada (certificação FSC) e possui uma graduação 2B especial, proporcionando um traço ultra suave, cores puras e uma excelente cobertura no papel.\n\nO modelo Ecolápis 48 cores sextavado não é aquarelável nem pastel, o que o torna perfeito para desenhos detalhados, coloridos uniformes, sombreamentos e ilustrações profissionais com alta resistência à quebra (Ponta MAX Resistente).`,
+      differentiators: [
+        '48 cores vibrantes e intensas para projetos criativos, artísticos e escolares',
+        'Lápis com graduação 2B para traços macios, suaves e máxima pigmentação',
+        'Formato sextavado (hexagonal): ergonomia superior que proporciona firmeza e não rola na mesa',
+        'Ponta MAX Resistente: processo de fabricação Sekural exclusivo Faber-Castell contra quebra',
+        'Produzido com madeira 100% sustentável e reflorestada (certificação FSC) para menor impacto ambiental',
+        'Perfeito para desenhos detalhados, técnicas de sombreamento e preenchimento uniforme',
+      ],
+      technicalSpecs: {
+        'Marca': 'Faber-Castell',
+        'Modelo': 'Ecolápis 48 cores Sextavado',
+        'Tipo de lápis': 'Lápis de cor permanente (seco)',
+        'Graduação': '2B (traço macio e ótima cobertura)',
+        'Quantidade de cores': '48 cores vivas',
+        'Formato do corpo': 'Sextavado / Hexagonal',
+        'Ponta dupla': 'Não',
+        'É lápis aquarelável': 'Não',
+        'É lápis pastel': 'Não',
+        'Formato de venda': 'Kit / Estojo com 48 lápis',
+        'Unidades por kit': '48',
+        'Origem': 'Brasil (Faber-Castell desde 1761)',
+        'Certificação': 'Madeira 100% reflorestada (FSC)',
+      },
+      packageContents: [
+        '01 Estojo Cartonado Oficial Faber-Castell com 48 Lápis de Cor Ecolápis Sextavados',
+      ],
+      careInstructions: [
+        'Apontar preferencialmente com apontadores originais Faber-Castell para melhor durabilidade da ponta',
+        'Evitar quedas sobre pisos rígidos para preservar a mina de cor',
+        'Armazenar em local seco e arejado',
+      ],
+    },
+    createdAt: '2026-09-24T15:46:00.000Z',
+  },
   {
     id: 'caixa-10-pct-papel-sulfite-chamex-a4-75g-5000f',
     name: 'Papel Sulfite Chamex A4 75g Caixa Com 10 Pacotes 500 Folhas Cada (5.000 Folhas)',
