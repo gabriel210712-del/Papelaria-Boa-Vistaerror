@@ -168,7 +168,7 @@ export const LandingPage: React.FC = () => {
   const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] text-[#241E19] flex flex-col selection:bg-[#F5D8BF] selection:text-[#5C3A14]">
+    <div className="min-h-screen notebook-paper-bg text-[#241E19] flex flex-col selection:bg-[#F5D8BF] selection:text-[#5C3A14] relative overflow-x-hidden">
       {/* Top Navbar with Pastel Orange Bar Crossing the Entire Page */}
       <header className="sticky top-0 z-30 bg-[#FFE5CE] border-b border-[#F5C7A1] px-4 sm:px-8 py-3.5 shadow-xs">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
@@ -239,16 +239,64 @@ export const LandingPage: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-1">
+      {/* Main Content Decorated as Ruled Notebook Sheet (Folha de Caderno Pautado) */}
+      <main className="flex-1 relative">
+        {/* Notebook Left Red Margin Line */}
+        <div 
+          aria-hidden="true" 
+          className="absolute top-0 bottom-0 left-6 sm:left-12 lg:left-16 w-0.5 bg-[#EF4444]/45 pointer-events-none z-10 shadow-[0_0_1px_rgba(239,68,68,0.25)]" 
+        />
+
+        {/* Notebook Binder Punch Holes on Left Margin */}
+        <div 
+          aria-hidden="true" 
+          className="hidden sm:flex absolute top-12 bottom-12 left-3 sm:left-4 lg:left-5 flex-col justify-between pointer-events-none z-10"
+        >
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="notebook-punch-hole" />
+          ))}
+        </div>
+
+        {/* Classic Brazilian School Notebook Header (Cabeçalho de Caderno Escolar) */}
+        <div className="relative border-b-2 border-double border-[#87B2DE]/60 bg-white/45 backdrop-blur-2xs py-2.5 px-4 sm:px-8 z-10">
+          <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs pl-5 sm:pl-10 lg:pl-12">
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-[#E05263] uppercase tracking-wider text-[11px] font-sans">
+                MATÉRIA:
+              </span>
+              <span className="font-handwriting text-xl text-[#241E19] font-bold tracking-wide border-b border-dashed border-[#87B2DE] px-1">
+                Papelaria Boa Vista — Catálogo Escolar & Escritório
+              </span>
+            </div>
+            <div className="flex items-center gap-6 sm:gap-10">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-[#E05263] uppercase tracking-wider text-[11px] font-sans">
+                  DATA:
+                </span>
+                <span className="font-handwriting text-xl text-[#241E19] font-bold border-b border-dashed border-[#87B2DE] px-1.5">
+                  24 / 09 / <span className="text-[#DF8035]">1998</span>
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-[#E05263] uppercase tracking-wider text-[11px] font-sans">
+                  FOLHA:
+                </span>
+                <span className="font-handwriting text-xl text-[#DF8035] font-bold border-b border-dashed border-[#87B2DE] px-1.5">
+                  Nº 01
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* HERO SECTION MATCHING Capturar.PNG */}
-        <section className="px-4 sm:px-8 pt-10 sm:pt-14 pb-12 max-w-7xl mx-auto">
+        <section className="px-4 sm:px-8 pt-10 sm:pt-14 pb-12 max-w-7xl mx-auto pl-8 sm:pl-16 lg:pl-20">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             {/* Left Column: Authentic Brand Headline & Delivery Flow */}
             <div className="lg:col-span-6 space-y-6">
               {/* Badge: NO BAIRRO DESDE 1998 */}
               <div>
-                <span className="inline-block px-3.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider text-[#DF8035] border border-[#F5D8BF] bg-[#FAF7F2] shadow-2xs">
+                <span className="inline-block px-3.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider text-[#DF8035] border border-[#F5D8BF] bg-white/90 shadow-2xs">
                   NO BAIRRO DESDE 1998
                 </span>
               </div>
@@ -295,7 +343,7 @@ export const LandingPage: React.FC = () => {
                     onClick={() => setSelectedDetailProduct(heroProducts[0])}
                     className="w-36 sm:w-44 lg:w-48 aspect-3/4 bg-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3 shadow-xl border border-white/80 transform -rotate-8 hover:-rotate-4 hover:scale-105 transition-all duration-300 cursor-pointer z-10 -mr-6 sm:-mr-8 overflow-hidden group"
                   >
-                    <div className="w-full h-full rounded-xl sm:rounded-2xl bg-[#F7F4EF] p-2 flex items-center justify-center overflow-hidden relative">
+                    <div className="w-full h-full rounded-xl sm:rounded-2xl bg-[#FAF8F5] p-2 flex items-center justify-center overflow-hidden relative">
                       <img
                         key={heroProducts[0].id}
                         src={heroProducts[0].image}
@@ -312,7 +360,7 @@ export const LandingPage: React.FC = () => {
                     onClick={() => setSelectedDetailProduct(heroProducts[1])}
                     className="w-40 sm:w-48 lg:w-52 aspect-3/4 bg-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3 shadow-2xl border border-white/90 transform hover:scale-105 transition-all duration-300 cursor-pointer z-20 overflow-hidden group"
                   >
-                    <div className="w-full h-full rounded-xl sm:rounded-2xl bg-[#F7F4EF] p-2 flex items-center justify-center overflow-hidden relative">
+                    <div className="w-full h-full rounded-xl sm:rounded-2xl bg-[#FAF8F5] p-2 flex items-center justify-center overflow-hidden relative">
                       <img
                         key={heroProducts[1].id}
                         src={heroProducts[1].image}
@@ -329,7 +377,7 @@ export const LandingPage: React.FC = () => {
                     onClick={() => setSelectedDetailProduct(heroProducts[2])}
                     className="w-36 sm:w-44 lg:w-48 aspect-3/4 bg-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3 shadow-xl border border-white/80 transform rotate-8 hover:rotate-4 hover:scale-105 transition-all duration-300 cursor-pointer z-10 -ml-6 sm:-ml-8 overflow-hidden group"
                   >
-                    <div className="w-full h-full rounded-xl sm:rounded-2xl bg-[#F7F4EF] p-2 flex items-center justify-center overflow-hidden relative">
+                    <div className="w-full h-full rounded-xl sm:rounded-2xl bg-[#FAF8F5] p-2 flex items-center justify-center overflow-hidden relative">
                       <img
                         key={heroProducts[2].id}
                         src={heroProducts[2].image}
@@ -345,7 +393,7 @@ export const LandingPage: React.FC = () => {
         </section>
 
         {/* PILL CATEGORIES (PREVIOUS ORIGINAL DESIGN + MARCAS FILTER) */}
-        <section id="catalogo" className="px-4 sm:px-8 pt-4 pb-4 max-w-7xl mx-auto space-y-3">
+        <section id="catalogo" className="px-4 sm:px-8 pt-4 pb-4 max-w-7xl mx-auto space-y-3 pl-8 sm:pl-16 lg:pl-20">
           {/* Main Category Pills */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2.5 overflow-x-auto pb-1 scrollbar-none">
@@ -421,7 +469,7 @@ export const LandingPage: React.FC = () => {
         </section>
 
         {/* CATALOG SECTION HEADER: "Todo o catálogo" as seen in Capturar.PNG */}
-        <section className="px-4 sm:px-8 pb-16 max-w-7xl mx-auto">
+        <section className="px-4 sm:px-8 pb-16 max-w-7xl mx-auto pl-8 sm:pl-16 lg:pl-20">
           <div className="flex items-baseline justify-between mb-6">
             <h2 className="text-2xl sm:text-3xl font-serif font-extrabold text-[#241E19]">
               Todo o catálogo
@@ -459,11 +507,11 @@ export const LandingPage: React.FC = () => {
                     key={product.id}
                     onClick={() => setSelectedDetailProduct(product)}
                     style={{ animationDelay: `${index * 50}ms` }}
-                    className="animate-card-fade-in bg-white border border-[#E8E3DC] rounded-3xl p-4 flex flex-col justify-between transition-all duration-300 ease-out hover:shadow-2xl hover:shadow-stone-300/50 hover:-translate-y-1.5 hover:border-[#DF8035]/40 group relative cursor-pointer"
+                    className="animate-card-fade-in bg-white/95 backdrop-blur-2xs border border-[#E8E3DC] rounded-3xl p-4 flex flex-col justify-between transition-all duration-300 ease-out hover:shadow-2xl hover:shadow-stone-300/50 hover:-translate-y-1.5 hover:border-[#DF8035]/40 group relative cursor-pointer"
                   >
                     <div>
                       {/* Product Image Stage */}
-                      <div className="relative aspect-square w-full bg-[#FAF7F2] rounded-2xl overflow-hidden mb-3 border border-[#EBE4DA] flex items-center justify-center p-3 group-hover:bg-[#f6f1e8] transition-colors duration-300">
+                      <div className="relative aspect-square w-full bg-[#FAF8F5] rounded-2xl overflow-hidden mb-3 border border-[#EBE4DA] flex items-center justify-center p-3 group-hover:bg-[#f6f1e8] transition-colors duration-300">
                         {/* Clean minimal category tag */}
                         <span className="absolute top-2.5 left-2.5 z-10 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold tracking-wider uppercase bg-white/95 text-[#DF8035] border border-stone-200 shadow-2xs backdrop-blur-xs">
                           {product.category}
@@ -556,13 +604,13 @@ export const LandingPage: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-[#E8E3DC] py-12 px-4 sm:px-8 mt-auto text-xs text-[#6E645D]">
+      <footer className="bg-white/90 backdrop-blur-xs border-t border-[#87B2DE]/50 py-12 px-4 sm:px-8 mt-auto text-xs text-[#6E645D] pl-8 sm:pl-16 lg:pl-20">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3 text-center md:text-left">
             <BoaVistaLogo size="sm" />
             <div>
               <p className="text-[11px] text-[#8C827A]">Av. Elias Cruvinel, 970 — Bairro Boa Vista, Uberaba/MG</p>
-              <p className="text-[10px] text-[#8C827A]">Seg a Sex 8h30–18h30 · Sáb 9h–14h</p>
+              <p className="text-[10px] text-[#8C827A]">Seg a Sex 8h30–18h30 · Sáb 9h–14h · No bairro desde 1998</p>
             </div>
           </div>
 

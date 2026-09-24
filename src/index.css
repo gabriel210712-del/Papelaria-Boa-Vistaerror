@@ -4,11 +4,12 @@
   :root {
     --font-serif: 'Fraunces', Georgia, serif;
     --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-handwriting: 'Caveat', cursive;
   }
 
   body {
     font-family: var(--font-sans);
-    background-color: #FAF7F2;
+    background-color: #FAF8F5;
     color: #241E19;
     margin: 0;
   }
@@ -16,6 +17,43 @@
   h1, h2, h3, .font-editorial {
     font-family: var(--font-serif);
   }
+
+  .font-handwriting {
+    font-family: var(--font-handwriting);
+  }
+}
+
+/* Notebook Ruled Paper Patterns (Folha de Caderno Pautado) */
+.notebook-paper-bg {
+  background-color: #FAF8F5;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 31px,
+    rgba(120, 168, 222, 0.34) 31px,
+    rgba(120, 168, 222, 0.34) 32px
+  );
+  background-size: 100% 32px;
+}
+
+/* Notebook Binder Hole Punch */
+.notebook-punch-hole {
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background-color: #ECE5D8;
+  box-shadow: inset 1.5px 1.5px 3px rgba(36, 30, 25, 0.35), 0 1px 1px rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(36, 30, 25, 0.12);
+}
+
+/* Notebook Spiral Ring Loop */
+.notebook-spiral-loop {
+  width: 22px;
+  height: 9px;
+  border-radius: 9999px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #D1D5DB 40%, #9CA3AF 70%, #4B5563 100%);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.15);
 }
 
 @keyframes cardFadeIn {
