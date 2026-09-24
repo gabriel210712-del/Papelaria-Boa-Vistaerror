@@ -14,7 +14,8 @@ import {
   ChevronRight,
   Sparkles,
   Tag,
-  X
+  X,
+  ArrowUpDown
 } from 'lucide-react';
 import { PRODUCTS } from '../data/products';
 import { Product, CartItem } from '../types';
@@ -24,10 +25,13 @@ import { BoaVistaLogo } from './BoaVistaLogo';
 import { ProductDetailModal } from './ProductDetailModal';
 import { isProductNew, getProductFullImageUrl } from '../utils/productUtils';
 
+export type SortOption = 'padrao' | 'preco-crescente' | 'preco-decrescente' | 'nome-az' | 'nome-za';
+
 export const LandingPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
   const [selectedBrand, setSelectedBrand] = useState<string>('Todas');
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState<SortOption>('padrao');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
@@ -123,7 +127,7 @@ export const LandingPage: React.FC = () => {
   }, []);
 
   const filteredProducts = useMemo(() => {
-    return PRODUCTS.filter((product) => {
+    const list = PRODUCTS.filter((product) => {
       // Category filter (previous exact logic)
       const matchesCategory =
         selectedCategory === 'Todos'
@@ -148,7 +152,24 @@ export const LandingPage: React.FC = () => {
 
       return matchesCategory && matchesBrand && matchesSearch;
     });
-  }, [selectedCategory, selectedBrand, searchQuery]);
+
+    // Sorting by price or A-Z / Z-A
+    return [...list].sort((a, b) => {
+      if (sortBy === 'preco-crescente') {
+        return a.price - b.price;
+      }
+      if (sortBy === 'preco-decrescente') {
+        return b.price - a.price;
+      }
+      if (sortBy === 'nome-az') {
+        return a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' });
+      }
+      if (sortBy === 'nome-za') {
+        return b.name.localeCompare(a.name, 'pt-BR', { sensitivity: 'base' });
+      }
+      return 0; // 'padrao' preserves showcase order
+    });
+  }, [selectedCategory, selectedBrand, searchQuery, sortBy]);
 
   const handleAddToCart = (product: Product, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
@@ -448,14 +469,15 @@ export const LandingPage: React.FC = () => {
             </div>
 
             {/* Active filters clear badge */}
-            {(selectedCategory !== 'Todos' || selectedBrand !== 'Todas' || searchQuery) && (
+            {(selectedCategory !== 'Todos' || selectedBrand !== 'Todas' || searchQuery || sortBy !== 'padrao') && (
               <button
                 onClick={() => {
                   setSelectedCategory('Todos');
                   setSelectedBrand('Todas');
                   setSearchQuery('');
+                  setSortBy('padrao');
                 }}
-                className="self-start sm:self-auto text-xs text-[#DF8035] hover:text-[#c46922] font-semibold flex items-center gap-1 py-1 px-2.5 rounded-lg hover:bg-[#DF8035]/10 transition-colors"
+                className="self-start sm:self-auto text-xs text-[#DF8035] hover:text-[#c46922] font-semibold flex items-center gap-1 py-1 px-2.5 rounded-lg hover:bg-[#DF8035]/10 transition-colors cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
                 Limpar filtros
@@ -496,15 +518,77 @@ export const LandingPage: React.FC = () => {
           </div>
         </section>
 
-        {/* CATALOG SECTION HEADER: "Todo o catálogo" as seen in Capturar.PNG */}
+        {/* CATALOG SECTION HEADER: "Todo o catálogo" with Sorting Controls */}
         <section className="px-4 sm:px-8 pb-16 max-w-7xl mx-auto pl-8 sm:pl-16 lg:pl-20">
-          <div className="flex items-baseline justify-between mb-6">
-            <h2 className="text-2xl sm:text-3xl font-serif font-extrabold text-[#241E19]">
-              Todo o catálogo
-            </h2>
-            <span className="text-xs sm:text-sm text-[#8C827A] font-medium">
-              {filteredProducts.length} {filteredProducts.length === 1 ? 'produto' : 'produtos'}
-            </span>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-serif font-extrabold text-[#241E19]">
+                {selectedCategory === 'Todos' ? 'Todo o catálogo' : selectedCategory}
+              </h2>
+              <span className="text-xs sm:text-sm text-[#8C827A] font-medium">
+                {filteredProducts.length} {filteredProducts.length === 1 ? 'produto encontrado' : 'produtos encontrados'}
+              </span>
+            </div>
+
+            {/* Sorting Controls: Dropdown & Quick Buttons */}
+            <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto">
+              <div className="flex items-center gap-2 bg-white/95 backdrop-blur-xs border border-[#E8E3DC] hover:border-[#DF8035]/60 rounded-2xl px-3.5 py-2 shadow-2xs transition-colors">
+                <ArrowUpDown className="w-3.5 h-3.5 text-[#DF8035] shrink-0" />
+                <label htmlFor="sort-select" className="text-xs font-bold text-[#6E645D] whitespace-nowrap cursor-pointer">
+                  Ordenar por:
+                </label>
+                <select
+                  id="sort-select"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as SortOption)}
+                  aria-label="Opções de ordenação do catálogo"
+                  className="bg-transparent text-xs font-bold text-[#241E19] focus:outline-hidden cursor-pointer pr-1 hover:text-[#DF8035] transition-colors"
+                >
+                  <option value="padrao">Destaques da Loja</option>
+                  <option value="preco-crescente">Menor Preço (R$ ↑)</option>
+                  <option value="preco-decrescente">Maior Preço (R$ ↓)</option>
+                  <option value="nome-az">De A a Z (Alfabética)</option>
+                  <option value="nome-za">De Z a A</option>
+                </select>
+              </div>
+
+              {/* Quick sort pills */}
+              <div className="hidden sm:flex items-center gap-1 bg-white/80 backdrop-blur-xs p-1 rounded-2xl border border-[#E8E3DC] shadow-2xs">
+                <button
+                  onClick={() => setSortBy('preco-crescente')}
+                  className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    sortBy === 'preco-crescente'
+                      ? 'bg-[#DF8035] text-white shadow-2xs'
+                      : 'text-[#6E645D] hover:bg-stone-100'
+                  }`}
+                  title="Ordenar por menor preço"
+                >
+                  Menor Preço
+                </button>
+                <button
+                  onClick={() => setSortBy('preco-decrescente')}
+                  className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    sortBy === 'preco-decrescente'
+                      ? 'bg-[#DF8035] text-white shadow-2xs'
+                      : 'text-[#6E645D] hover:bg-stone-100'
+                  }`}
+                  title="Ordenar por maior preço"
+                >
+                  Maior Preço
+                </button>
+                <button
+                  onClick={() => setSortBy('nome-az')}
+                  className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    sortBy === 'nome-az'
+                      ? 'bg-[#DF8035] text-white shadow-2xs'
+                      : 'text-[#6E645D] hover:bg-stone-100'
+                  }`}
+                  title="Ordenar de A a Z"
+                >
+                  A - Z
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Clean Rounded Card Grid Matching the Reference */}
@@ -520,8 +604,9 @@ export const LandingPage: React.FC = () => {
                   setSelectedCategory('Todos');
                   setSelectedBrand('Todas');
                   setSearchQuery('');
+                  setSortBy('padrao');
                 }}
-                className="px-5 py-2.5 rounded-full bg-[#DF8035] text-white text-xs font-bold shadow-xs"
+                className="px-5 py-2.5 rounded-full bg-[#DF8035] text-white text-xs font-bold shadow-xs cursor-pointer"
               >
                 Ver Catálogo Completo
               </button>
