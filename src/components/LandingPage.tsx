@@ -35,6 +35,31 @@ export const LandingPage: React.FC = () => {
   const [selectedDetailProduct, setSelectedDetailProduct] = useState<Product | null>(null);
   const [recentlyAddedId, setRecentlyAddedId] = useState<string | null>(null);
 
+  // Dynamic current date updated daily with correct day, month, and year
+  const [currentDate, setCurrentDate] = useState(() => {
+    const now = new Date();
+    return {
+      day: String(now.getDate()).padStart(2, '0'),
+      month: String(now.getMonth() + 1).padStart(2, '0'),
+      year: now.getFullYear(),
+    };
+  });
+
+  useEffect(() => {
+    const updateDate = () => {
+      const now = new Date();
+      setCurrentDate({
+        day: String(now.getDate()).padStart(2, '0'),
+        month: String(now.getMonth() + 1).padStart(2, '0'),
+        year: now.getFullYear(),
+      });
+    };
+
+    // Recalculate periodically so it seamlessly rolls over every day at midnight
+    const interval = setInterval(updateDate, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
   // Rotation of the 3 featured hero cards every 5 seconds (preserving existing model and layout)
   const [heroOffset, setHeroOffset] = useState(0);
 
@@ -273,8 +298,11 @@ export const LandingPage: React.FC = () => {
                 <span className="font-bold text-[#E05263] uppercase tracking-wider text-[11px] font-sans">
                   DATA:
                 </span>
-                <span className="font-handwriting text-xl text-[#241E19] font-bold border-b border-dashed border-[#87B2DE] px-1.5">
-                  24 / 09 / <span className="text-[#DF8035]">1998</span>
+                <span 
+                  className="font-handwriting text-xl text-[#241E19] font-bold border-b border-dashed border-[#87B2DE] px-1.5"
+                  title="Data atualizada automaticamente todos os dias"
+                >
+                  {currentDate.day} / {currentDate.month} / <span className="text-[#DF8035]">{currentDate.year}</span>
                 </span>
               </div>
               <div className="flex items-center gap-2">
