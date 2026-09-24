@@ -9,8 +9,55 @@ import canetaBicPretaImg from '../assets/images/regenerated_image_1790213535558.
 import squishyButterImg from '../assets/images/regenerated_image_1790216425651.webp';
 import mochilaRb27422AzulImg from '../assets/images/regenerated_image_1790217299888.png';
 import lapisFaberCastell12CoresImg from '../assets/images/lapis_faber_castell_ecolapis_12_cores.webp';
+import lapisFaberCastell24CoresImg from '../assets/images/lapis_faber_castell_ecolapis_24_cores.jpg';
 
 export const PRODUCTS: Product[] = [
+  {
+    id: 'lapis-de-cor-24-cores-faber-castell-ecolapis',
+    name: 'Lápis de Cor 24 Cores Faber-Castell Ecolápis Sextavado',
+    category: 'Lápis de Cor',
+    brand: 'Faber-Castell',
+    tag: 'FABER-CASTELL ORIGINAL',
+    badge: '24 Cores Vivas',
+    price: 39.80,
+    image: lapisFaberCastell24CoresImg,
+    description: 'Ecolápis 24 cores da Faber-Castell. Qualidade Faber-Castell, cores intensas e vivas, formato sextavado, ponta MAX resistente e perfeita cobertura.',
+    details: {
+      fullDescription: `Ecolápis 24 cores da Faber-Castell.\n\nQualidade Faber-Castell, cores intensas e vivas, os lápis são sextavados proporcionando excelente conforto e firmeza no manuseio.\n\nDimensões aproximadas do lápis: 17,5 cm comprimento x 0,7 cm diâmetro.\n\nLibere sua criatividade e se divirta com o Ecolápis de cor da Faber-Castell. Desenhos com cores mais vivas e perfeita cobertura para projetos escolares, artísticos e do dia a dia.\n\nProduzido com madeira 100% reflorestada e certificada pelo FSC (Forest Stewardship Council), garantindo total respeito ao meio ambiente.`,
+      differentiators: [
+        'Cores mais vivas e intensas com perfeita cobertura',
+        'Formato sextavado (hexagonal): conforto e pegada firme que não rola na mesa',
+        'Ponta MAX Resistente com técnica Sekural exclusiva contra quebras',
+        'Madeira 100% reflorestada e certificada FSC',
+        'Dimensões aproximadas do lápis: 17,5 cm comprimento x 0,7 cm diâmetro',
+      ],
+      technicalSpecs: {
+        'Marca': 'Faber-Castell',
+        'Modelo': 'Ecolápis',
+        'Tipo de lápis': 'De cor',
+        'Quantidade de cores': '24 cores',
+        'Formato': 'Sextavado',
+        'Com ponta dupla': 'Não',
+        'É lápis aquarelável': 'Não',
+        'É lápis pastel': 'Não',
+        'Unidades por embalagem': '24',
+        'Formato de venda': 'Unidade (estojo)',
+        'Dimensões do lápis': '17,5 cm comprimento x 0,7 cm diâmetro',
+        'Dimensões da embalagem': '21 cm altura x 17 cm largura',
+        'Peso': '160 g',
+        'Categoria': 'Lápis de Cor e Desenho',
+      },
+      packageContents: [
+        '24 EcoLápis de Cor Faber-Castell',
+      ],
+      careInstructions: [
+        'Armazenar em local seco e arejado',
+        'Evitar quedas para proteger a mina interna',
+        'Usar apontadores afiados para preservar o formato da ponta',
+      ],
+    },
+    createdAt: '2026-09-24T12:35:00.000Z',
+  },
   {
     id: 'lapis-de-cor-12-cores-faber-castell-ecolapis',
     name: 'Lápis de Cor 12 Cores Faber-Castell Ecolápis Sextavado',
@@ -18,7 +65,7 @@ export const PRODUCTS: Product[] = [
     brand: 'Faber-Castell',
     tag: 'FABER-CASTELL ORIGINAL',
     badge: 'Mais Vendido',
-    price: 19.90,
+    price: 18.90,
     image: lapisFaberCastell12CoresImg,
     description: 'Ecolápis 12 cores da Faber-Castell. Qualidade Faber-Castell reconhecida mundialmente com cores intensas e vivas, formato sextavado ergonômico e perfeita cobertura.',
     details: {
