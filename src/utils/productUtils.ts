@@ -36,6 +36,8 @@ export const CLEAN_PRODUCT_IMAGES: Record<string, string> = {
   'lapis-de-cor-24-cores-faber-castell-ecolapis': '/product-images/lapis-de-cor-24-cores-faber-castell-ecolapis.jpg',
   'papel-sulfite-chamex-a4-75g-500f': '/product-images/papel-sulfite-chamex-a4-75g-500f.png',
   'papel-sulfite-magnum-digital-a4-75g-500f': '/product-images/papel-sulfite-magnum-digital-a4-75g-500f.png',
+  'caixa-10-pct-papel-sulfite-magnum-a4-75g-5000f': '/product-images/caixa-10-pct-papel-sulfite-magnum-a4-75g-5000f.png',
+  'caixa-10-pct-papel-sulfite-chamex-a4-75g-5000f': '/product-images/caixa-10-pct-papel-sulfite-chamex-a4-75g-5000f.png',
 };
 
 /**

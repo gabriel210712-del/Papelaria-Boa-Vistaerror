@@ -12,8 +12,103 @@ import lapisFaberCastell12CoresImg from '../assets/images/lapis_faber_castell_ec
 import lapisFaberCastell24CoresImg from '../assets/images/lapis_faber_castell_ecolapis_24_cores.jpg';
 import papelChamexA4Img from '../assets/images/papel_sulfite_chamex_a4_75g_500f.png';
 import papelMagnumDigitalA4Img from '../assets/images/papel_sulfite_magnum_digital_a4_75g_500f.png';
+import caixaMagnumA4Img from '../assets/images/caixa_10_pct_papel_sulfite_magnum_a4_75g_5000f.png';
+import caixaChamexA4Img from '../assets/images/caixa_10_pct_papel_sulfite_chamex_a4_75g_5000f.png';
 
 export const PRODUCTS: Product[] = [
+  {
+    id: 'caixa-10-pct-papel-sulfite-chamex-a4-75g-5000f',
+    name: 'Papel Sulfite Chamex A4 75g Caixa Com 10 Pacotes 500 Folhas Cada (5.000 Folhas)',
+    category: 'Papel Sulfite',
+    brand: 'Chamex',
+    tag: 'CHAMEX / SYLVAMO ORIGINAL',
+    badge: 'Caixa 10 Pcts (5.000 Folhas)',
+    price: 289.00,
+    image: caixaChamexA4Img,
+    description: 'Papel Sulfite Chamex A4 75g Caixa Fechada com 10 pacotes de 500 folhas (5.000 folhas no total). Superfície lisa e uniforme, brancura superior, 99% de não atolamento e 100% sustentável.',
+    details: {
+      fullDescription: `Papel Sulfite Chamex A4 75g Caixa Com 10 Pacotes 500 Folhas Cada Profissional Sustentável 210x297mm (Total 5.000 Folhas).\n\nA caixa de Papel Sulfite Chamex A4 75g é a solução corporativa definitiva para quem busca a mais alta qualidade gráfica aliada a rendimento e economia em grande escala.\n\nProduzido pela Sylvamo no Brasil a partir de 100% de florestas plantadas e renováveis, o Chamex A4 possui brancura superior e superfície uniforme que valoriza impressões coloridas, gráficos, contratos e relatórios importantes, com garantia de 99% de não atolamento.\n\nA caixa institucional rígida protege os 10 pacotes individuais (resmas de 500 folhas) contra poeira e variações de umidade durante o armazenamento.`,
+      differentiators: [
+        'Formato A4 (21 cm x 29.7 cm): o tamanho mais utilizado, ideal para impressoras laser, inkjet e copiadoras',
+        'Gramatura 75 g/m²: equilíbrio perfeito entre leveza, firmeza e eficiência para impressões e cópias frente e verso',
+        'Superfície Lisa e Uniforme: garante impressões nítidas, textos de alta definição e sem borrões',
+        'Caixa econômica com 10 pacotes de 500 folhas (5.000 folhas no total): supre grandes demandas de empresas e escritórios',
+        'Brancura Superior: proporciona contraste visual de excelência para leitura e gráficos profissionais',
+        '99% de não atolamento comprovado e 100% de origem em florestas plantadas',
+      ],
+      technicalSpecs: {
+        'Marca': 'Chamex (Sylvamo)',
+        'Linha': 'A4 75g Profissional Sustentável',
+        'Tipo de papel': 'Sulfite / Offset',
+        'Tamanho do papel': 'A4 (210 mm x 297 mm)',
+        'Gramagem (Gramatura)': '75 g/m²',
+        'Cor': 'Branco com Brancura Superior',
+        'Quantidade total de folhas': '5.000 folhas (10 pacotes x 500 folhas)',
+        'Formato de venda': 'Caixa / Kit com 10 unidades',
+        'Unidades por kit': '10 pacotes',
+        'Folhas por pacote': '500 folhas',
+        'Peso total da caixa': 'Aprox. 23 kg',
+        'Comprimento x Largura': '29.7 cm x 21 cm',
+        'Origem': 'Feito no Brasil (100% Florestas Plantadas)',
+      },
+      packageContents: [
+        '01 Caixa Institucional Reforçada Chamex Sylvamo com 10 Pacotes de Papel Sulfite A4 75g (500 folhas cada - Total 5.000 Folhas)',
+      ],
+      careInstructions: [
+        'Armazenar em local seco, arejado e livre de umidade excessiva',
+        'Empilhar sobre estrados ou prateleiras, evitando contato direto com o chão',
+        'Manter os pacotes lacrados até o abastecimento das bandejas de impressão',
+      ],
+    },
+    createdAt: '2026-09-24T15:40:00.000Z',
+  },
+  {
+    id: 'caixa-10-pct-papel-sulfite-magnum-a4-75g-5000f',
+    name: 'Caixa Com 10 Pct Papel Sulfite A4 75g 500fl Magnum (5.000 Folhas)',
+    category: 'Papel Sulfite',
+    brand: 'Magnum',
+    tag: 'SUZANO / MAGNUM ORIGINAL',
+    badge: 'Caixa 10 Pcts (5.000 Folhas)',
+    price: 269.00,
+    image: caixaMagnumA4Img,
+    description: 'Caixa fechada com 10 pacotes de 500 folhas (5.000 folhas no total) de Papel Sulfite A4 75g Magnum Suzano. Linha comercial Cut Size para rascunhos, cópias e alto volume.',
+    details: {
+      fullDescription: `Caixa Com 10 Pct Papel Sulfite A4 75g 500fl Magnum (Total 5.000 Folhas).\n\nProduzido pela Suzano Papel e Celulose, a linha Magnum Cut Size oferece excelente rendimento para escritórios, escolas, gráficas rápidas e empresas que demandam alto volume diário de impressão e cópia.\n\nLinha básica e eficiente, ideal para todo tipo de trabalho, como rascunhos, cópias, informativos, apostilas e relatórios corporativos.\n\nApresentação em caixa reforçada contendo 10 pacotes protegidos de 500 folhas cada, facilitando a estocagem e protegendo o papel contra a umidade do ar.`,
+      differentiators: [
+        'Caixa fechada com 10 pacotes de 500 folhas (total de 5.000 folhas) com máxima economia por resma',
+        'Fabricado pela Suzano Papel e Celulose (Qualidade e alta performance)',
+        'Gramatura de 75 g/m² no formato padrão A4 (210 x 297 mm)',
+        'Linha Cut Size com corte perfeito para passagem suave sem atolamento',
+        'Ideal para todo tipo de trabalho: cópias, relatórios, rascunhos e impressões corporativas',
+        'Embalagens individuais seladas para conservação prolongada',
+      ],
+      technicalSpecs: {
+        'Marca': 'Magnum (Suzano Papel e Celulose)',
+        'Família': 'Papel Magnum MI',
+        'Linha': 'Cut Size',
+        'Tipo': 'Caixa com 10 pacotes',
+        'Tamanho do papel (Formato)': 'A4 (210 mm x 297 mm)',
+        'Gramatura': '75 g/m² (075)',
+        'Quantidade de folhas por pacote': '500 folhas',
+        'Quantidade de pacotes': '10 pacotes',
+        'Total de folhas': '5.000 folhas',
+        'Cor': 'Branco',
+        'Acabamento': 'Magnum Brasil',
+        'Tributação': 'Papel Comercial',
+        'Peso total': 'Aprox. 23 kg',
+        'Formato de venda': 'Caixa fechada',
+      },
+      packageContents: [
+        '01 Caixa de Papelão Reforçada com 10 Pacotes de Papel Sulfite A4 75g Magnum com 500 Folhas cada (5.000 Folhas)',
+      ],
+      careInstructions: [
+        'Manter em local seco, arejado e ao abrigo do sol direto',
+        'Não colocar diretamente no chão; apoiar sobre estrados ou prateleiras',
+        'Abrir os pacotes de 500 folhas apenas conforme a necessidade de uso',
+      ],
+    },
+    createdAt: '2026-09-24T15:38:00.000Z',
+  },
   {
     id: 'papel-sulfite-magnum-digital-a4-75g-500f',
     name: 'Papel Sulfite A4 Branco 500 Folhas Magnum Digital',

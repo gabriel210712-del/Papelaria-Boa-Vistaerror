@@ -36,6 +36,8 @@ export const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({
 
   // Best seller IDs / criteria
   const bestSellerIds = useMemo(() => new Set([
+    'caixa-10-pct-papel-sulfite-chamex-a4-75g-5000f',
+    'caixa-10-pct-papel-sulfite-magnum-a4-75g-5000f',
     'papel-sulfite-chamex-a4-75g-500f',
     'papel-sulfite-magnum-digital-a4-75g-500f',
     'lapis-de-cor-24-cores-faber-castell-ecolapis',
