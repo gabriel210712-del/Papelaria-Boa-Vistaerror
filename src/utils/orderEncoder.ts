@@ -15,6 +15,7 @@ export interface OrderPayload {
   orderId: string;
   createdAt: string;
   customerName: string;
+  customerPhone?: string;
   deliveryMethod: 'retirada' | 'entrega';
   neighborhoodType?: 'boa_vista' | 'outros';
   customNeighborhood?: string;
@@ -30,6 +31,7 @@ export interface OrderPayload {
  */
 export function buildOrderPayload({
   customerName,
+  customerPhone,
   deliveryMethod,
   neighborhoodType,
   customNeighborhood,
@@ -40,6 +42,7 @@ export function buildOrderPayload({
   grandTotal,
 }: {
   customerName: string;
+  customerPhone?: string;
   deliveryMethod: 'retirada' | 'entrega';
   neighborhoodType: 'boa_vista' | 'outros';
   customNeighborhood: string;
@@ -76,6 +79,7 @@ export function buildOrderPayload({
     orderId,
     createdAt: `${dateStr} às ${timeStr}`,
     customerName: customerName.trim() || 'Cliente',
+    customerPhone: customerPhone ? customerPhone.trim() : undefined,
     deliveryMethod,
     neighborhoodType,
     customNeighborhood: customNeighborhood.trim(),
@@ -100,6 +104,7 @@ export function encodeOrder(order: OrderPayload): string {
       id: order.orderId,
       dt: order.createdAt,
       n: order.customerName,
+      p: order.customerPhone || '',
       m: order.deliveryMethod === 'retirada' ? 'r' : 'e',
       nt: order.neighborhoodType === 'boa_vista' ? 'b' : 'o',
       cn: order.customNeighborhood || '',
@@ -168,6 +173,7 @@ export function decodeOrder(param: string): OrderPayload | null {
         orderId: data.id || 'PBV-000000',
         createdAt: data.dt || 'Hoje',
         customerName: data.n || 'Cliente',
+        customerPhone: data.p || undefined,
         deliveryMethod,
         neighborhoodType,
         customNeighborhood: data.cn || '',

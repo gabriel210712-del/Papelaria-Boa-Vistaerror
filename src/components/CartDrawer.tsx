@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { X, Plus, Minus, Trash2, MessageSquareShare, ShoppingBag, Truck, Store, MapPin, AlertCircle, Camera, Copy, Check, Printer, FileText, ArrowRight } from 'lucide-react';
+import { X, Plus, Minus, Trash2, MessageSquareShare, ShoppingBag, Truck, Store, MapPin, AlertCircle, Camera, Copy, Check, Printer, FileText, ArrowRight, Phone } from 'lucide-react';
 import { CartItem } from '../types';
 import { getProductFullImageUrl } from '../utils/productUtils';
 import { buildOrderPayload, getOrderPrintUrl } from '../utils/orderEncoder';
@@ -28,18 +28,21 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [neighborhoodType, setNeighborhoodType] = useState<'boa_vista' | 'outros'>('boa_vista');
   const [customNeighborhood, setCustomNeighborhood] = useState('');
   const [customerName, setCustomerName] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
   const [addressOrNotes, setAddressOrNotes] = useState('');
   const [hasCopied, setHasCopied] = useState(false);
   const [whatsAppSent, setWhatsAppSent] = useState(false);
   const [lastWhatsAppUrl, setLastWhatsAppUrl] = useState('');
   const [validationErrors, setValidationErrors] = useState<{
     customerName?: string;
+    customerPhone?: string;
     customNeighborhood?: string;
     address?: string;
     minimumDelivery?: string;
   }>({});
 
   const nameInputRef = useRef<HTMLInputElement>(null);
+  const phoneInputRef = useRef<HTMLInputElement>(null);
   const customNeighborhoodInputRef = useRef<HTMLInputElement>(null);
   const addressInputRef = useRef<HTMLInputElement>(null);
   const scrollableBodyRef = useRef<HTMLDivElement>(null);
@@ -63,6 +66,25 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const grandTotal = total + deliveryFee;
 
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    const digits = raw.replace(/\D/g, '').slice(0, 11);
+    let formatted = digits;
+    if (digits.length > 2 && digits.length <= 6) {
+      formatted = `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+    } else if (digits.length > 6 && digits.length <= 10) {
+      formatted = `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+    } else if (digits.length > 10) {
+      formatted = `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`;
+    } else if (digits.length > 0) {
+      formatted = `(${digits}`;
+    }
+    setCustomerPhone(formatted);
+    if (validationErrors.customerPhone) {
+      setValidationErrors((prev) => ({ ...prev, customerPhone: undefined }));
+    }
+  };
+
   const generateOrderMessage = (nameOverride?: string, methodOverride?: 'retirada' | 'entrega') => {
     const finalName = (nameOverride ?? customerName).trim() || 'Cliente';
     const finalMethod = methodOverride ?? deliveryMethod;
@@ -76,6 +98,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
     let message = `🌻 *NOVO PEDIDO - PAPELARIA BOA VISTA* 🌻\n\n`;
     message += `👤 *Cliente:* ${finalName}\n`;
+    if (customerPhone.trim()) {
+      message += `📱 *Telefone/WhatsApp:* ${customerPhone.trim()}\n`;
+    }
 
     if (finalMethod === 'retirada') {
       message += `📍 *Modalidade:* Retirada na Loja (Av. Elias Cruvinel, 970 - Bairro Boa Vista, Uberaba-MG)\n`;
@@ -118,6 +143,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
     const orderPayload = buildOrderPayload({
       customerName: finalName,
+      customerPhone: customerPhone.trim(),
       deliveryMethod: finalMethod,
       neighborhoodType,
       customNeighborhood,
@@ -143,6 +169,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     const activeMethod = overrideDeliveryMethod || deliveryMethod;
     const errors: {
       customerName?: string;
+      customerPhone?: string;
       customNeighborhood?: string;
       address?: string;
       minimumDelivery?: string;
@@ -155,6 +182,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     const effectiveCustomerName = (fallbackCustomerName ?? customerName).trim();
     if (!effectiveCustomerName) {
       errors.customerName = 'Por favor, informe o seu nome para o pedido.';
+    }
+
+    const phoneDigits = customerPhone.replace(/\D/g, '');
+    if (!phoneDigits) {
+      errors.customerPhone = 'Por favor, informe o seu número de WhatsApp / telefone (obrigatório).';
+    } else if (phoneDigits.length < 10) {
+      errors.customerPhone = 'Informe o DDD e o número completo (mínimo 10 dígitos, ex: (34) 99999-9999).';
     }
 
     if (activeMethod === 'entrega') {
@@ -172,6 +206,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       if (errors.customerName && nameInputRef.current) {
         nameInputRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         nameInputRef.current.focus();
+      } else if (errors.customerPhone && phoneInputRef.current) {
+        phoneInputRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        phoneInputRef.current.focus();
       } else if (errors.customNeighborhood && customNeighborhoodInputRef.current) {
         customNeighborhoodInputRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         customNeighborhoodInputRef.current.focus();
@@ -577,6 +614,43 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           Usar "Cliente do Catálogo"
                         </button>
                       </div>
+                    )}
+                  </div>
+
+                  {/* Customer Phone / WhatsApp (MANDATORY) */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-xs font-medium text-[#6E645D] flex items-center gap-1.5">
+                        <Phone className="w-3.5 h-3.5 text-[#DF8035]" />
+                        <span>Seu WhatsApp / Telefone: <span className="text-red-500 font-bold">*</span></span>
+                      </label>
+                      <span className="text-[10px] text-red-500 font-bold bg-red-50 px-2 py-0.5 rounded-full border border-red-200">
+                        Obrigatório
+                      </span>
+                    </div>
+                    <div className="relative">
+                      <input
+                        ref={phoneInputRef}
+                        type="tel"
+                        inputMode="tel"
+                        value={customerPhone}
+                        onChange={handlePhoneChange}
+                        placeholder="Ex: (34) 99999-9999"
+                        className={`w-full text-xs px-3 py-2.5 bg-white border rounded-xl focus:outline-hidden transition-colors text-[#241E19] placeholder:text-[#A89F91] ${
+                          validationErrors.customerPhone
+                            ? 'border-red-500 ring-1 ring-red-500 bg-red-50/30'
+                            : 'border-[#E8E3DC] focus:border-[#DF8035]'
+                        }`}
+                      />
+                    </div>
+                    {validationErrors.customerPhone ? (
+                      <p className="text-[11px] text-red-600 mt-1 font-medium flex items-center gap-1">
+                        ⚠ {validationErrors.customerPhone}
+                      </p>
+                    ) : (
+                      <p className="text-[10px] text-[#8C827A] mt-1">
+                        Para confirmarmos seu pedido e avisar assim que estiver na bancada.
+                      </p>
                     )}
                   </div>
 

@@ -129,6 +129,11 @@ export const OrderPrintView: React.FC<OrderPrintViewProps> = ({ order, onBack, a
               </div>
               <div className="space-y-1 text-xs">
                 <p className="text-sm font-bold text-[#241E19]">{order.customerName}</p>
+                {order.customerPhone && (
+                  <p className="text-[#241E19] font-medium">
+                    <strong>Telefone/WhatsApp:</strong> {order.customerPhone}
+                  </p>
+                )}
                 <p className="text-[#6E645D]">Canal: Pedido via Catálogo Online / WhatsApp</p>
                 {order.addressOrNotes && order.deliveryMethod === 'retirada' && (
                   <p className="text-[#6E645D] pt-1">
