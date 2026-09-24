@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Printer, ArrowLeft, Download, CheckCircle2, MessageSquareShare, MapPin, Truck, Store, Calendar, User, FileText } from 'lucide-react';
+import { Printer, ArrowLeft, Download, CheckCircle2, MessageSquareShare, MapPin, Truck, Store, Calendar, User, FileText, Phone } from 'lucide-react';
 import { OrderPayload } from '../utils/orderEncoder';
 import { BoaVistaLogo } from './BoaVistaLogo';
 import { buildWhatsAppUrl, openWhatsAppSafely } from '../utils/whatsapp';
@@ -27,7 +27,8 @@ export const OrderPrintView: React.FC<OrderPrintViewProps> = ({ order, onBack, a
 
   const handleSendWhatsAppConfirmation = () => {
     const text = `Olá ${order.customerName}! Recebemos seu pedido *${order.orderId}* na Papelaria Boa Vista e já estamos com a ordem de separação em mãos na bancada! Total: R$ ${order.grandTotal.toFixed(2).replace('.', ',')}. Logo avisaremos quando estiver pronto!`;
-    const url = buildWhatsAppUrl(text);
+    const targetPhone = order.customerPhone || undefined;
+    const url = buildWhatsAppUrl(text, targetPhone);
     openWhatsAppSafely(url);
   };
 
@@ -127,14 +128,23 @@ export const OrderPrintView: React.FC<OrderPrintViewProps> = ({ order, onBack, a
                 <User className="w-4 h-4" />
                 <span>Dados do Cliente</span>
               </div>
-              <div className="space-y-1 text-xs">
-                <p className="text-sm font-bold text-[#241E19]">{order.customerName}</p>
-                {order.customerPhone && (
-                  <p className="text-[#241E19] font-medium">
-                    <strong>Telefone/WhatsApp:</strong> {order.customerPhone}
-                  </p>
-                )}
-                <p className="text-[#6E645D]">Canal: Pedido via Catálogo Online / WhatsApp</p>
+              <div className="space-y-2 text-xs">
+                <div>
+                  <span className="text-[10px] uppercase font-bold text-[#8C827A] block">Nome:</span>
+                  <p className="text-base font-extrabold text-[#241E19]">{order.customerName}</p>
+                </div>
+                <div>
+                  <span className="text-[10px] uppercase font-bold text-[#8C827A] block">Telefone / WhatsApp:</span>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <Phone className="w-3.5 h-3.5 text-[#DF8035] shrink-0" />
+                    <span className="text-sm font-bold text-[#241E19] font-mono bg-stone-100 px-2 py-0.5 rounded-md border border-[#E8E3DC] print:bg-transparent print:border-none print:p-0">
+                      {order.customerPhone || 'Não informado'}
+                    </span>
+                  </div>
+                </div>
+                <p className="text-[#6E645D] text-[11px] pt-0.5">
+                  Canal: Pedido via Catálogo Online / WhatsApp
+                </p>
                 {order.addressOrNotes && order.deliveryMethod === 'retirada' && (
                   <p className="text-[#6E645D] pt-1">
                     <strong className="text-[#241E19]">Observação:</strong> {order.addressOrNotes}
@@ -289,7 +299,10 @@ export const OrderPrintView: React.FC<OrderPrintViewProps> = ({ order, onBack, a
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" className="rounded-sm border-[#E8E3DC] text-[#DF8035] focus:ring-0" />
-                  <span>Produtos embalados e etiquetados com nome do cliente</span>
+                  <span>
+                    Produtos embalados e etiquetados com nome e telefone do cliente ({order.customerName}
+                    {order.customerPhone ? ` • ${order.customerPhone}` : ''})
+                  </span>
                 </label>
               </div>
 
