@@ -1,8 +1,0 @@
-{
-  "name": "papelaria boa vista",
-  "description": "Landing page e catálogo da Papelaria Boa Vista com arquitetura de Roteamento Híbrido Agressivo para Vite, React e TypeScript.",
-  "requestFramePermissions": [],
-  "majorCapabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
-}
